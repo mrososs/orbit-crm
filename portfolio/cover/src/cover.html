@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Orbit CRM — cover</title>
+    <style>
+      @font-face {
+        font-family: 'Inter Variable';
+        src: url('../../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
+        font-weight: 100 900;
+      }
+      @font-face {
+        font-family: 'IBM Plex Sans Arabic';
+        src: url('../../../node_modules/@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-600-normal.woff2') format('woff2');
+        font-weight: 600;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; }
+      body {
+        font-family: 'Inter Variable', system-ui, sans-serif;
+        background: #0b0d14;
+        color: #e9ebf0;
+        position: relative;
+        -webkit-font-smoothing: antialiased;
+      }
+      .glow {
+        position: absolute; inset: 0;
+        background:
+          radial-gradient(900px 600px at 78% 30%, rgba(91, 84, 232, 0.35), transparent 70%),
+          radial-gradient(700px 500px at 15% 85%, rgba(27, 175, 122, 0.12), transparent 70%);
+      }
+      .grid {
+        position: absolute; inset: 0;
+        background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(1200px 800px at 60% 40%, black, transparent 75%);
+      }
+      .copy { position: absolute; left: 110px; top: 140px; width: 560px; }
+      .brand { display: flex; align-items: center; gap: 16px; }
+      .brand svg { width: 56px; height: 56px; }
+      .brand span { font-size: 30px; font-weight: 650; letter-spacing: -0.02em; }
+      .label {
+        display: inline-flex; align-items: center; gap: 8px; margin-top: 54px;
+        padding: 7px 14px; border-radius: 999px; font-size: 15px; font-weight: 550;
+        color: #c7c6ff; background: rgba(123,120,246,0.14); border: 1px solid rgba(123,120,246,0.35);
+      }
+      .label i { width: 7px; height: 7px; border-radius: 50%; background: #34c995; }
+      h1 { margin-top: 26px; font-size: 72px; line-height: 1.02; font-weight: 700; letter-spacing: -0.045em; }
+      h1 em { font-style: normal; background: linear-gradient(90deg, #a9a7fb, #7b78f6); -webkit-background-clip: text; color: transparent; }
+      .lead { margin-top: 26px; font-size: 20px; line-height: 1.55; color: #a0a7b4; }
+      .features { margin-top: 38px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 28px; font-size: 17px; color: #d5d8df; }
+      .features li { list-style: none; display: flex; align-items: center; gap: 10px; }
+      .features li::before { content: ''; width: 18px; height: 18px; border-radius: 6px; background: rgba(123,120,246,0.2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a9a7fb' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/12px no-repeat; }
+      .langs { margin-top: 40px; display: flex; gap: 10px; }
+      .langs span { padding: 8px 14px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); font-size: 15px; font-weight: 600; color: #e9ebf0; }
+      .langs .ar { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+      .stack { position: absolute; left: 110px; bottom: 70px; width: 560px; font-size: 15px; line-height: 1.6; color: #737b8a; letter-spacing: 0.01em; }
+      .stack b { color: #a0a7b4; font-weight: 550; }
+      .desktop {
+        position: absolute; left: 790px; top: 118px; width: 1240px;
+        border-radius: 18px; overflow: hidden; background: #fff;
+        box-shadow: 0 50px 120px -30px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.08);
+      }
+      .chrome { height: 40px; background: #eef0f4; display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid #e1e4ea; }
+      .chrome i { width: 12px; height: 12px; border-radius: 50%; background: #d4d8df; }
+      .chrome .url { margin-left: 18px; height: 24px; width: 360px; border-radius: 7px; background: #fff; font-size: 12px; color: #858d9c; display: flex; align-items: center; padding: 0 12px; }
+      .desktop img { display: block; width: 100%; }
+      .phone {
+        position: absolute; left: 760px; top: 455px; width: 280px; height: 590px;
+        border-radius: 44px; padding: 11px; background: #15171f;
+        box-shadow: 0 40px 90px -20px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.12);
+      }
+      .phone img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 34px; display: block; }
+      .caption { position: absolute; left: 1010px; top: 1022px; font-size: 13px; color: #737b8a; }
+    </style>
+  </head>
+  <body>
+    <div class="glow"></div>
+    <div class="grid"></div>
+
+    <section class="copy">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#5b54e8"/><circle cx="16" cy="16" r="5" fill="#fff"/><ellipse cx="16" cy="16" rx="11" ry="5.2" stroke="#fff" stroke-opacity=".55" stroke-width="1.6" transform="rotate(-28 16 16)"/><circle cx="25.2" cy="11.4" r="1.9" fill="#c7d2fe"/></svg>
+        <span>Orbit CRM</span>
+      </div>
+      <div class="label"><i></i>Interactive frontend demo</div>
+      <h1>Turn relationships into <em>revenue.</em></h1>
+      <p class="lead">A modern sales workspace — live dashboards, a drag-and-drop pipeline, contacts, companies, tasks and analytics, all derived from one reactive dataset.</p>
+      <ul class="features">
+        <li>Executive dashboard</li>
+        <li>Kanban pipeline</li>
+        <li>Contacts &amp; companies</li>
+        <li>Tasks &amp; activities</li>
+        <li>Reports &amp; analytics</li>
+        <li>Light &amp; dark themes</li>
+      </ul>
+      <div class="langs"><span>English</span><span class="ar">العربية · RTL</span><span>Français</span></div>
+    </section>
+    <p class="stack"><b>Angular 21</b> · Signals · NgRx SignalStore · TypeScript · Tailwind CSS · Apache ECharts · ngx-translate</p>
+
+    <div class="desktop">
+      <div class="chrome"><i></i><i></i><i></i><div class="url">orbit-crm · /dashboard</div></div>
+      <img src="../../screenshots/01-dashboard-desktop.png" alt="" />
+    </div>
+    <div class="phone"><img src="../../screenshots/15-mobile-arabic-rtl.png" alt="" /></div>
+  </body>
+</html>

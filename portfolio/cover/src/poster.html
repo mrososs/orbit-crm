@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Orbit CRM — video poster</title>
+    <style>
+      @font-face {
+        font-family: 'Inter Variable';
+        src: url('../../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
+        font-weight: 100 900;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; }
+      body {
+        font-family: 'Inter Variable', system-ui, sans-serif;
+        background: #f6f7f9;
+        color: #10141f;
+        position: relative;
+        -webkit-font-smoothing: antialiased;
+      }
+      .bg {
+        position: absolute; inset: 0;
+        background:
+          radial-gradient(1000px 520px at 50% 0%, rgba(91, 84, 232, 0.16), transparent 70%),
+          linear-gradient(#f6f7f9, #eceef3);
+      }
+      header { position: absolute; top: 92px; left: 0; right: 0; text-align: center; }
+      .brand { display: inline-flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 650; color: #10141f; }
+      .brand svg { width: 40px; height: 40px; }
+      h1 { margin-top: 26px; font-size: 68px; line-height: 1.05; font-weight: 700; letter-spacing: -0.04em; }
+      h1 span { color: #5b54e8; }
+      p { margin-top: 18px; font-size: 22px; color: #565f71; }
+      .frame {
+        position: absolute; left: 50%; top: 392px; width: 1420px; transform: translateX(-50%);
+        border-radius: 20px 20px 0 0; overflow: hidden; background: #fff;
+        box-shadow: 0 40px 100px -30px rgba(16, 20, 31, 0.35), 0 0 0 1px rgba(16, 20, 31, 0.06);
+      }
+      .chrome { height: 42px; background: #eef0f4; display: flex; align-items: center; gap: 8px; padding: 0 18px; border-bottom: 1px solid #e1e4ea; }
+      .chrome i { width: 12px; height: 12px; border-radius: 50%; background: #d4d8df; }
+      .frame img { display: block; width: 100%; }
+      .play {
+        position: absolute; left: 50%; top: 690px; transform: translate(-50%, -50%);
+        width: 132px; height: 132px; border-radius: 50%;
+        background: rgba(79, 70, 229, 0.94); box-shadow: 0 24px 60px -10px rgba(79, 70, 229, 0.65), 0 0 0 14px rgba(255, 255, 255, 0.55);
+        display: flex; align-items: center; justify-content: center;
+      }
+      .play::after { content: ''; margin-left: 10px; border-left: 40px solid #fff; border-top: 25px solid transparent; border-bottom: 25px solid transparent; }
+      .meta { position: absolute; left: 50%; top: 790px; transform: translateX(-50%); padding: 10px 20px; border-radius: 999px; background: rgba(16,20,31,0.82); color: #fff; font-size: 17px; font-weight: 550; white-space: nowrap; }
+    </style>
+  </head>
+  <body>
+    <div class="bg"></div>
+    <header>
+      <div class="brand">
+        <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#5b54e8"/><circle cx="16" cy="16" r="5" fill="#fff"/><ellipse cx="16" cy="16" rx="11" ry="5.2" stroke="#fff" stroke-opacity=".55" stroke-width="1.6" transform="rotate(-28 16 16)"/><circle cx="25.2" cy="11.4" r="1.9" fill="#c7d2fe"/></svg>
+        Orbit CRM
+      </div>
+      <h1>Modern Sales Workspace <span>— Product Walkthrough</span></h1>
+      <p>Dashboards · Kanban pipeline · Contacts · Tasks · Analytics · English, العربية &amp; Français</p>
+    </header>
+    <div class="frame">
+      <div class="chrome"><i></i><i></i><i></i></div>
+      <img src="../../screenshots/02-sales-pipeline.png" alt="" />
+    </div>
+    <div class="play"></div>
+    <div class="meta">Angular · Signals · ECharts · Watch the demo</div>
+  </body>
+</html>
