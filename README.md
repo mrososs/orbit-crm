@@ -11,6 +11,8 @@ companies, tasks and analytics — built with Angular 21, Signals, NgRx SignalSt
 
 English · العربية (full RTL) · Français
 
+**[Live demo → orbit-crm-demo.vercel.app](https://orbit-crm-demo.vercel.app)**
+
 </div>
 
 > **Portfolio demo.** Orbit CRM is a frontend-only application. It runs entirely in the browser
@@ -93,7 +95,7 @@ services are required.
 | `npm run build` | Production build → `dist/orbit-crm/browser` |
 | `npm run serve:dist` | Serve the production build with SPA fallback on port 4310 |
 | `npm run test:ci` | Unit tests (Vitest), single run |
-| `npm run e2e` | Production build + Playwright E2E (desktop and mobile projects) |
+| `npm run e2e` | Production build + Playwright E2E (desktop and mobile projects); set `E2E_BASE_URL` to test a deployed site |
 | `npm run lint` / `npm run typecheck` | ESLint and TypeScript checks (app + specs) |
 | `npm run i18n:check` | Translation key/plural/placeholder parity and usage scan |
 | `npm run icons:check` | Verifies every referenced icon is registered |
@@ -147,12 +149,17 @@ language never converts amounts.
 The repository includes `vercel.json` (Angular preset, `npm run build`, output
 `dist/orbit-crm/browser`, SPA rewrite to `index.html`, long-term caching for hashed assets).
 
-1. Push the repository to GitHub.
+The live demo is deployed from this repository: **https://orbit-crm-demo.vercel.app**. Every push
+to `main` triggers a production deployment through Vercel’s GitHub integration.
+
+To deploy your own copy:
+
+1. Fork or push the repository to GitHub.
 2. Import it in Vercel — no environment variables are needed.
 3. Deploy. Any static host works the same way: serve `dist/orbit-crm/browser` with a fallback to
    `index.html`.
 
-The project has not been deployed as part of this work.
+To run the E2E suite against a deployed site: `E2E_BASE_URL=https://orbit-crm-demo.vercel.app npx playwright test`.
 
 ## Known limitations
 

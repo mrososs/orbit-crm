@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const PORT = 4310;
+/** Set E2E_BASE_URL to run the suite against a deployed site instead of the local build. */
+const REMOTE = process.env['E2E_BASE_URL'];
 
 /**
  * E2E tests run against the production build served with SPA fallback.
@@ -14,7 +16,7 @@ export default defineConfig({
   retries: process.env['CI'] ? 1 : 0,
   reporter: [['list']],
   use: {
-    baseURL: `http://localhost:${PORT}`,
+    baseURL: REMOTE ?? `http://localhost:${PORT}`,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
@@ -30,10 +32,12 @@ export default defineConfig({
       use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } },
     },
   ],
-  webServer: {
-    command: `node scripts/serve-dist.mjs ${PORT}`,
-    url: `http://localhost:${PORT}`,
-    reuseExistingServer: !process.env['CI'],
-    timeout: 30_000,
-  },
+  webServer: REMOTE
+    ? undefined
+    : {
+        command: `node scripts/serve-dist.mjs ${PORT}`,
+        url: `http://localhost:${PORT}`,
+        reuseExistingServer: !process.env['CI'],
+        timeout: 30_000,
+      },
 });

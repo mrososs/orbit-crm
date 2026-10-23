@@ -167,8 +167,8 @@ strings in Arabic and French views, RTL drag & drop, unchanged monetary values a
 - 71 unit tests (Vitest) cover metric definitions, comparability rules, domain rules, the seed,
   persistence/reset/recovery, CRUD and cascades, the language service, dictionary parity,
   formatting and form validation in three languages.
-- 22 Playwright E2E tests run against the production build on desktop and mobile viewports; each
-  fails on any browser console error.
+- 22 Playwright E2E tests run against the production build on desktop and mobile viewports — both
+  locally and against the live Vercel deployment; each fails on any browser console error.
 - The interface was reviewed visually at 1440, 768 and 390 px widths in English, Arabic and French
   and in dark mode; overflow, clipping and RTL issues found during review were fixed.
 
@@ -188,6 +188,8 @@ Mobile: [dashboard](screenshots/08-mobile-dashboard.png) ·
 
 ## Demo
 
+- **Live demo** — [orbit-crm-demo.vercel.app](https://orbit-crm-demo.vercel.app) (deployed on
+  Vercel from the GitHub repository; the full E2E suite passes against it).
 - **Product walkthrough** — [`videos/orbit-crm-walkthrough.mp4`](videos/orbit-crm-walkthrough.mp4)
   (1920×1080, 30 fps, 72 s): dashboard and analytics, reports, dragging a deal to *Won* and seeing
   the dashboard update, contacts, task completion, English → Arabic → French, mobile layout and
@@ -200,8 +202,8 @@ captions and the pointer are overlays drawn outside the application.
 
 ## Limitations
 
-Orbit CRM is a frontend-only interactive demonstration using local seeded data. It is not a
-deployed, multi-user production CRM: there is no backend, authentication, permissions, real-time
+Orbit CRM is a frontend-only interactive demonstration using local seeded data. It is deployed as
+a static site, but it is not a multi-user production CRM: there is no backend, authentication, permissions, real-time
 collaboration or server-side validation, and data is stored in a single browser's `localStorage`.
 All companies, people and figures are fictional, and no performance numbers, customer outcomes or
 business results are claimed.
