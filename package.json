@@ -1,0 +1,76 @@
+{
+  "name": "orbit-crm",
+  "version": "1.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "test:ci": "ng test --watch=false",
+    "i18n:check": "node scripts/check-i18n.mjs",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit",
+    "icons:check": "node scripts/check-icons.mjs",
+    "e2e": "ng build && playwright test",
+    "media:screenshots": "node portfolio/scripts/capture-screenshots.mjs",
+    "media:artwork": "node portfolio/scripts/render-artwork.mjs",
+    "media:videos": "node portfolio/scripts/record-videos.mjs",
+    "media": "ng build && node portfolio/scripts/capture-screenshots.mjs && node portfolio/scripts/render-artwork.mjs && node portfolio/scripts/record-videos.mjs",
+    "serve:dist": "node scripts/serve-dist.mjs",
+    "check": "npm run typecheck && npm run lint && npm run i18n:check && npm run icons:check && npm run test:ci"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "packageManager": "npm@11.7.0",
+  "dependencies": {
+    "@angular/cdk": "^21.2.14",
+    "@angular/common": "^21.0.0",
+    "@angular/compiler": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/forms": "^21.0.0",
+    "@angular/platform-browser": "^21.0.0",
+    "@angular/router": "^21.0.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource/ibm-plex-sans-arabic": "^5.3.0",
+    "@lucide/angular": "^1.61.0",
+    "@ngrx/signals": "^21.1.1",
+    "@ngx-translate/core": "^18.0.0",
+    "@ngx-translate/http-loader": "^18.0.0",
+    "echarts": "^6.1.0",
+    "lucide": "^1.61.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.0.0",
+    "@angular/cli": "^21.0.0",
+    "@angular/compiler-cli": "^21.0.0",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/postcss": "^4.1.12",
+    "angular-eslint": "21.4.0",
+    "eslint": "^10.3.0",
+    "ffmpeg-static": "^5.3.0",
+    "jsdom": "^27.1.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.12",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "8.59.2",
+    "vitest": "^4.0.8"
+  },
+  "description": "Orbit CRM — a multilingual (EN/AR/FR) Angular sales workspace demo: dashboards, Kanban pipeline, contacts, companies, tasks and analytics.",
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

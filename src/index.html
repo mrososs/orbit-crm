@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Orbit CRM</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Orbit CRM — a modern sales workspace for managing relationships, deals and pipeline performance. Interactive frontend demo."
+    />
+    <meta name="theme-color" content="#4f46e5" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script>
+      // Apply persisted theme and language before first paint (no flash).
+      (function () {
+        try {
+          var prefs = JSON.parse(localStorage.getItem('orbit-crm.preferences') || '{}');
+          var dark =
+            prefs.theme === 'dark' ||
+            (prefs.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+          var lang = localStorage.getItem('orbit-crm.language');
+          if (lang === 'ar') {
+            document.documentElement.lang = 'ar';
+            document.documentElement.dir = 'rtl';
+          } else if (lang === 'fr') {
+            document.documentElement.lang = 'fr';
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>
