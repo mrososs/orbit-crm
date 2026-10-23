@@ -61,7 +61,6 @@
     "@tailwindcss/postcss": "^4.1.12",
     "angular-eslint": "21.4.0",
     "eslint": "^10.3.0",
-    "ffmpeg-static": "^5.3.0",
     "jsdom": "^27.1.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.12",
@@ -72,5 +71,8 @@
   "description": "Orbit CRM — a multilingual (EN/AR/FR) Angular sales workspace demo: dashboards, Kanban pipeline, contacts, companies, tasks and analytics.",
   "engines": {
     "node": ">=20.19.0"
+  },
+  "optionalDependencies": {
+    "ffmpeg-static": "^5.3.0"
   }
 }
