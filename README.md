@@ -8,6 +8,8 @@
 
 A modern, multilingual sales workspace — executive dashboards, a drag-and-drop pipeline, contacts,
 companies, tasks and analytics — built with Angular 21, Signals, NgRx SignalStore and Apache ECharts.
+Includes an **Interactive Demo Assistant** built on the AG-UI and A2UI protocols, which runs fully in
+the browser with no AI model.
 
 English · العربية (full RTL) · Français
 
@@ -37,6 +39,19 @@ English · العربية (full RTL) · Français
 - **Reports & analytics** — revenue trend, cohort conversion funnel, pipeline analysis, deal-size
   distribution, salesperson performance and lead-source insights, filterable by period, owner and
   source.
+- **Interactive Demo Assistant (AG-UI + A2UI)** — ask for a sales overview, your biggest deals,
+  overdue tasks, a follow-up task or a stage change, and get interactive cards built from live CRM
+  data. A deterministic agent built on the official `@ag-ui/client` runtime streams standard AG-UI
+  events. The UI it sends is A2UI v0.9.1 JSON, checked against a Zod allowlist before Orbit's own
+  Angular component catalog renders it. Writes go through allowlisted CRM commands, with
+  confirmation and Undo. Network latency is simulated, and a live inspector shows every event.
+  It is clearly labelled as a scripted demo — no LLM, API key or backend. See
+  **[docs/AGENTIC_DEMO.md](docs/AGENTIC_DEMO.md)**.
+- **Orbit form controls** — reusable, accessible controls built on the Signal Forms custom-control
+  API (`FormValueControl` / `FormCheckboxControl`): text, email, phone, password, number,
+  currency, textarea, custom dropdown, searchable select, date/time picker, checkbox and toggle.
+  They handle disabled, readonly, required, loading, touched/dirty/invalid and localized errors.
+  Every form and filter in the app uses them, and an internal showcase lives at `/showcase`.
 - **Multilingual by design** — runtime switching between English, Arabic and French without a
   reload, full RTL layout, CLDR plurals, locale-aware dates, numbers and currency, translated charts.
 - **Product polish** — light & dark themes, ⌘K command palette, skeleton loading, empty states,
@@ -59,9 +74,22 @@ English · العربية (full RTL) · Français
   <img src="portfolio/screenshots/15-mobile-arabic-rtl.png" width="24%" alt="Mobile Arabic dashboard" />
 </p>
 
+**Interactive Demo Assistant and form controls**
+
+| | |
+| --- | --- |
+| ![Assistant: sales overview rendered as an A2UI surface](portfolio/screenshots/16-assistant-sales-overview.png) | ![Assistant: follow-up form with searchable contact select](portfolio/screenshots/17-assistant-follow-up-form.png) |
+| ![Assistant: AG-UI event inspector](portfolio/screenshots/18-assistant-event-inspector.png) | ![Assistant in Arabic (RTL)](portfolio/screenshots/19-assistant-arabic-rtl.png) |
+| ![Form controls showcase](portfolio/screenshots/21-form-controls-showcase.png) | ![Custom searchable select in the deal form](portfolio/screenshots/22-custom-dropdown.png) |
+
+<p align="center">
+  <img src="portfolio/screenshots/20-mobile-assistant.png" width="24%" alt="Assistant on mobile (full-screen drawer)" />
+</p>
+
 **Videos:** [`portfolio/videos/orbit-crm-walkthrough.mp4`](portfolio/videos/orbit-crm-walkthrough.mp4)
-(1920×1080, 72 s) · [`portfolio/videos/orbit-crm-short.mp4`](portfolio/videos/orbit-crm-short.mp4)
-(1080×1920, 26 s). Both were recorded from the running production build.
+(1920×1080, 127 s) · [`portfolio/videos/orbit-crm-short.mp4`](portfolio/videos/orbit-crm-short.mp4)
+(1080×1920, 35 s). Both were recorded from the running production build and include the
+assistant.
 
 ## Tech stack
 
@@ -69,7 +97,8 @@ English · العربية (full RTL) · Français
 | --- | --- |
 | Framework | Angular 21.2 — standalone components, zoneless change detection, OnPush, lazy routes |
 | State | Angular Signals, NgRx SignalStore 21 (entities + a custom optimistic CRUD feature) |
-| Forms | Angular Signal Forms with translated validation messages |
+| Forms | Angular Signal Forms + Orbit custom controls (`FormValueControl` / `FormCheckboxControl`), translated validation messages |
+| Agentic UI | AG-UI 1.0 (`@ag-ui/core`, `@ag-ui/client`), A2UI v0.9.1 (`@a2ui/web_core`, `@a2ui/angular`), Zod 3.25 — lazy-loaded |
 | UI | Tailwind CSS 4 design tokens, Angular CDK (Dialog, Menu, Overlay, Drag & Drop, Bidi, A11y), Lucide icons |
 | Charts | Apache ECharts 6 (tree-shaken, SVG renderer, lazy-loaded) |
 | i18n | ngx-translate 18, `Intl` formatting, `Intl.PluralRules` |
@@ -112,7 +141,11 @@ repository contracts (abstract classes used as DI tokens) with a `localStorage` 
 can be swapped for HTTP without changing the UI. Analytics are pure functions wrapped in `computed`,
 so moving a deal to *Won* re-derives every KPI and chart.
 
-See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for decisions and data flow, and
+The demo assistant (`features/assistant`) is a self-contained lazy chunk. It reads and writes CRM
+data only through an allowlisted `AssistantTools` adapter over the same stores and `CrmService`.
+
+See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for decisions and data flow,
+**[docs/AGENTIC_DEMO.md](docs/AGENTIC_DEMO.md)** for the AG-UI + A2UI assistant, and
 **[docs/METRICS.md](docs/METRICS.md)** for metric definitions and dataset assumptions.
 
 ## Demo data & reset
@@ -136,13 +169,21 @@ language never converts amounts.
 
 ## Testing
 
-- **71 unit tests** — KPI/revenue/win-rate definitions, comparability rules, pipeline movement,
-  task rules, seed determinism and integrity, persistence/reset/recovery, CRUD and cascades,
-  language service and plurals, dictionary parity, form validation in three languages.
-- **22 E2E tests** on the production build — including drag-and-drop to Won updating the
-  dashboard, keyboard alternative with undo, contact and task flows, persistence and reset, RTL
-  switching and RTL drag-and-drop, translated charts/dialogs/toasts, and mobile navigation. Each
-  test fails on any browser console error.
+- **126 unit tests**:
+  - KPI/revenue/win-rate definitions, comparability rules, pipeline movement, task rules, seed
+    determinism and integrity, persistence/reset/recovery, CRUD and cascades.
+  - Language service and plurals, dictionary parity, form validation in three languages.
+  - Form controls.
+  - The demo assistant: Zod schemas, intent routing, AG-UI event order and validity,
+    cancellation, simulated latency, and CRM actions with confirmation and undo.
+- **32 E2E tests** on the production build:
+  - Drag-and-drop to Won updating the dashboard, keyboard alternative with undo, contact and task
+    flows, persistence and reset.
+  - RTL switching and RTL drag-and-drop, translated charts/dialogs/toasts, mobile navigation.
+  - The form-controls showcase.
+  - Assistant flows on desktop and mobile (live KPIs, follow-up creation, confirmed stage move with
+    Undo, honest fallback, blocked malformed payload, Arabic RTL).
+  - Each test fails on any browser console error.
 
 ## Deployment (Vercel)
 
@@ -166,7 +207,12 @@ To run the E2E suite against a deployed site: `E2E_BASE_URL=https://orbit-crm-de
 - Frontend-only demo: data lives in one browser's `localStorage`; there is no multi-user sync,
   authentication, permissions or server-side validation.
 - Every visitor acts as the seeded "Alex Morgan" team member.
-- Native `<select>` and date inputs are used for accessibility and reliability; their pop-ups follow
-  the browser/OS styling.
+- Dropdowns and searchable selects are custom listbox controls. Date and time fields stay native
+  inputs, with Orbit styling, shortcuts and a localized echo; their calendar pop-ups follow the
+  browser/OS styling.
+- The demo assistant is scripted: it recognises a fixed catalogue of requests (EN/AR/FR) and says
+  so for anything else. Its lazy chunk is ≈ 167 kB transferred. `npm audit` reports a Zod 3
+  advisory with no available fix while the A2UI packages require Zod 3 — see
+  [docs/AGENTIC_DEMO.md § Limitations](docs/AGENTIC_DEMO.md#13-limitations).
 - Built on Angular 21.2 because Angular 22 requires Node ≥ 24.15 (the development machine runs
   24.11); the code uses current APIs (signals, Signal Forms, zoneless) and should upgrade cleanly.

@@ -14,9 +14,10 @@ implementation without touching UI code.
 | Overlays, menus, drag & drop | Angular CDK 21 | Dialog, Menu, Overlay, DragDrop, A11y, Bidi |
 | Charts | Apache ECharts 6 (tree-shaken, SVG renderer) | Lazy chunk shared by dashboard and reports |
 | i18n | ngx-translate 18 + `Intl` | EN / AR (RTL) / FR, runtime switching |
-| Forms | Angular Signal Forms | Schema validators, translated messages |
-| Icons | Lucide (`@lucide/angular` dynamic icon + `lucide` icon data) | One component, 84 registered icons |
-| Tests | Vitest (Angular unit-test builder) + Playwright | 71 unit tests, 22 E2E tests |
+| Forms | Angular Signal Forms + Orbit custom controls | `FormValueControl` / `FormCheckboxControl` components in `shared/ui/controls` |
+| Agentic UI | AG-UI 1.0.3 (`@ag-ui/core`, `@ag-ui/client`), A2UI v0.9.1 (`@a2ui/web_core` 0.14, `@a2ui/angular` 0.13), Zod 3.25 | Deterministic in-browser agent; one lazy chunk — see [AGENTIC_DEMO.md](./AGENTIC_DEMO.md) |
+| Icons | Lucide (`@lucide/angular` dynamic icon + `lucide` icon data) | One component, 92 registered icons |
+| Tests | Vitest (Angular unit-test builder) + Playwright | 126 unit tests, 32 E2E tests |
 
 ## Folder structure
 
@@ -33,15 +34,19 @@ src/app/
     services/       preferences, theme, toasts, viewport, platform tokens
   shared/
     ui/             design-system components (button, badge, dialog, tabs, chart…)
+      controls/     Signal Forms custom controls (inputs, dropdown, combobox, date picker…)
     charts/         ECharts container, theme reader, formatters
     domain/         CRM-aware presentational pieces (badges, timeline, task row, record actions)
     pipes/ directives/ utils/
   state/            root entity stores, CRUD store feature, CrmService, WorkspaceService
-  features/         dashboard, pipeline, deals, contacts, companies, activities, reports, settings
+  features/         dashboard, pipeline, deals, contacts, companies, activities, reports, settings,
+                    showcase (form controls), assistant (AG-UI + A2UI demo assistant)
 ```
 
 Every feature route is lazy-loaded (`loadComponent`). Entity create/edit dialogs and the command
-palette are loaded on demand, so they are not part of the initial bundle.
+palette are loaded on demand, so they are not part of the initial bundle. The demo assistant is
+imported with a dynamic `import()` and created with `ViewContainerRef.createComponent` the first
+time it opens. This replaced `@defer`, because its runtime added ≈ 14 kB to the initial chunk.
 
 ## Data flow
 
@@ -126,17 +131,60 @@ to in-memory storage.
   isolates so `US$` is not reordered to `$US`.
 - The page `<title>` follows both navigation and language (`TranslatedTitleStrategy`).
 - `scripts/check-i18n.mjs` enforces key parity, plural completeness, placeholder parity and that
-  every key used in code exists.
+  every key used in code exists, including keys referenced from the assistant's JSON scenario
+  fixtures.
 
 ## UI system
 
-Native elements carry semantics (`button[ui-button]`, `select.control`, `input.control`) and are
-styled by a small set of component classes over Tailwind tokens. Reusable components cover the
-cases native elements cannot: dialog/drawer frame, confirm dialog, toasts, tabs, tooltip, stat
-card with animated count-up, skeletons, empty states, paginator, sort headers, range filter and
-the ECharts container. The chart container takes an *options builder* so colours are read from the
+Native elements carry semantics (`button[ui-button]`, `input.control`) and are styled by a small
+set of component classes over Tailwind tokens. Reusable components cover the cases native elements
+cannot: dialog/drawer frame, confirm dialog, toasts, tabs, tooltip, stat card with animated
+count-up, skeletons, empty states, paginator, sort headers, range filter and the ECharts container.
+
+### Form controls (`shared/ui/controls`)
+
+Every form field and list filter uses one family of controls built on the Signal Forms
+custom-control API:
+
+- `ControlBase` holds what all of them share. `[formField]` binds `errors`, `disabled`, `readonly`,
+  `required`, `invalid`, `pending`, `hidden`, `dirty` and `name`, plus a `touched` model. On top of
+  that come the label, hint, *Optional* tag, loading state, generated ids, and the
+  `aria-describedby` / `aria-invalid` wiring to a translated error message. `focus()` lets Signal
+  Forms focus the first invalid field.
+- **Value controls** (`FormValueControl`): text, email, phone, URL, password (with reveal), number
+  (`transformedValue` reports parse errors), currency (locale symbol, group/decimal separators,
+  Arabic-Indic digits), textarea (character counter), date / time (shortcuts and a localized echo).
+- **Boolean controls** (`FormCheckboxControl`): checkbox and switch.
+- **Listbox controls**: `ui-select` (custom dropdown) and `ui-combobox` (searchable select) share
+  `ListboxControl`. The trigger keeps focus and points at the active option with
+  `aria-activedescendant`. Keyboard: arrows, Home/End, Enter/Space, Escape, Tab and type-ahead.
+  The popup is a CDK `Overlay` + `TemplatePortal`: the connected-overlay directive would have
+  added ≈ 9 kB to the initial bundle. It re-anchors whenever any ancestor scrolls (dialog bodies,
+  the assistant conversation), because the CDK reposition strategy only follows registered
+  scroll containers.
+- Stable `data-testid`s: `{testId}`, `{testId}-panel` and `{testId}-option` with `data-value`.
+
+The controls follow language, direction and theme, and are documented live at `/showcase`.
+
+### Page-width breakpoints
+
+Wide layouts use `page-xl:` / `page-2xl:` instead of Tailwind's `xl:` / `2xl:`. These are
+container queries on the shell's content column (`@container/page`). With the sidebar visible they
+switch at exactly the same viewport widths, but they also account for the docked assistant panel,
+which narrows the column by 25 rem. The chart container takes an *options builder* so colours are read from the
 live CSS theme tokens at render time; the categorical palette was validated for colour-vision
 deficiency and contrast in both themes.
+
+## Interactive Demo Assistant
+
+`features/assistant` is an AG-UI agent (`OrbitDemoAgent extends AbstractAgent`) running in the
+browser. Its replies are A2UI v0.9.1 surfaces carried in AG-UI activity events. Zod validates every
+boundary: the intent catalogue, scenario fixtures, run input, A2UI payloads, user actions and
+domain input. An Angular A2UI catalog renders the surfaces using the same form controls and chart
+container as the app. CRM access goes through `AssistantTools`, an allowlisted adapter over the
+root stores and `CrmService`, so the assistant has no side door into state. Stage moves need an
+explicit, matching confirmation and can be undone. Full design, event flow and protocol examples:
+[AGENTIC_DEMO.md](./AGENTIC_DEMO.md).
 
 ## Accessibility
 
@@ -144,12 +192,16 @@ Keyboard-operable menus (CDK Menu), roving-tabindex tabs that follow reading dir
 dialogs and mobile drawer, visible focus rings, `aria-sort` on sortable headers, `aria-invalid` /
 `aria-describedby` on form controls, polite live regions for toasts and pagination, a non-drag
 "Move to" alternative for every pipeline card, reduced-motion support (system setting or in-app
-toggle) and a skip link.
+toggle) and a skip link. Listbox controls follow the ARIA combobox pattern. The assistant is a
+modal dialog with a focus trap below 1440 px and a labelled region when docked. Its conversation
+is a polite live region, and Escape closes it.
 
 ## Performance
 
-- Initial bundle: **574 kB raw / ~155 kB transferred**. ECharts is a separate lazy chunk
-  (≈185 kB transferred) loaded only by chart pages.
+- Initial bundle: **≈ 591 kB raw / ≈ 160 kB transferred**, up from 574 kB / 155 kB before the form
+  controls and assistant launcher. ECharts is a separate lazy chunk (≈ 185 kB transferred) loaded
+  only by chart pages. The assistant (AG-UI, A2UI, Zod, agent and catalog) is a lazy chunk of
+  ≈ 843 kB raw / ≈ 167 kB transferred, loaded on first open.
 - Lucide icons are registered as plain SVG data rendered by one dynamic component; registering
   icon components instead added ~270 kB of compiled templates.
 - Intl formatters are cached; derived data is memoised by `computed`.
@@ -160,8 +212,14 @@ toggle) and a skip link.
   determinism and referential integrity, persistence restore/repair/recover/reset, CRUD and
   cascades through `CrmService`, language service (default, RTL, persistence, plurals),
   dictionary parity, locale formatting, and contact form validation in three languages.
+  Form controls: value binding, touched and error display, readonly guards, currency parsing,
+  dropdown mouse/keyboard/type-ahead. The assistant: schemas, routing, AG-UI event order and
+  validity, cancellation, latency, and session actions with confirmation and undo (see
+  [AGENTIC_DEMO.md § Tests](./AGENTIC_DEMO.md#12-tests)).
 - **E2E (Playwright, production build):** dashboard, drag-and-drop to Won updating KPIs, keyboard
   move with undo, filters surviving navigation, contact create/edit with validation, task
   completion, persistence across reload, reset, 404, i18n (RTL/LTR switching, persistence,
   translated charts/dialogs/toasts, no English leakage, RTL drag-and-drop, unchanged amounts) and
-  mobile navigation in English, Arabic and French. Every test fails on console errors.
+  mobile navigation in English, Arabic and French. Also covered: the form-controls showcase,
+  seven desktop assistant flows and two mobile assistant flows. Every test fails on console
+  errors.

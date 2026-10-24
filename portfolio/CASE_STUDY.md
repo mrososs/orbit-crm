@@ -59,6 +59,14 @@ original dataset, and corrupted storage is detected and repaired.
   deal-size distribution, salesperson performance and lead-source insights.
 - **Settings** — theme (light/dark/system), reduced motion, language, workspace defaults, table
   density, dataset information, JSON export and demo reset.
+- **Interactive Demo Assistant** — ask for a sales overview, your biggest open deals, overdue tasks,
+  a follow-up task or a stage change, and get interactive cards built from live CRM data. It runs
+  on the AG-UI and A2UI protocols, entirely in the browser, and is clearly labelled as a scripted
+  demo with no AI model.
+- **Orbit form controls** — one family of accessible controls behind every form and filter: text
+  inputs, number and currency, textarea, custom dropdown, searchable select, date/time picker,
+  checkbox and toggle. They are built on the Signal Forms custom-control API and shown at
+  `/showcase`.
 
 ## Engineering approach
 
@@ -98,8 +106,9 @@ the day the workspace is first opened so the demo always looks current.
 - **Validated chart palette** — the categorical colours were checked for colour-vision-deficiency
   separation and contrast in light and dark modes; pipeline stages use an ordinal indigo ramp with
   status colours reserved for Won and Lost.
-- **Native controls first** — buttons, selects and inputs keep their built-in semantics; CDK
-  supplies menus, dialogs, overlays and drag & drop.
+- **Semantics first** — buttons and inputs keep their native semantics. Dropdowns and searchable
+  selects are custom controls that follow the ARIA combobox pattern, so they can match the design
+  in every theme and direction. CDK supplies menus, dialogs, overlays and drag & drop.
 - **Honest numbers** — when a comparison can't be computed from real data, the interface says so
   instead of inventing a trend.
 - **States everywhere** — skeletons that match final layouts, purposeful empty states, toasts with
@@ -148,6 +157,44 @@ plural selection. E2E tests switch EN → AR → FR while checking direction, si
 preserved filters, translated chart text, dialogs, validation and toasts, the absence of English
 strings in Arabic and French views, RTL drag & drop, unchanged monetary values and mobile layouts.
 
+## Agentic UI: the Interactive Demo Assistant
+
+![Assistant docked beside the dashboard, showing a sales overview surface](screenshots/16-assistant-sales-overview.png)
+
+**The goal.** Show how an agent-driven interface can be engineered safely — without pretending a
+scripted demo is artificial intelligence. A visitor asks for a view, and the assistant answers
+with interactive UI built from the same records the rest of the CRM shows.
+
+**Two open protocols.**
+- **AG-UI** carries the conversation: run lifecycle, streamed text, tool calls, state and
+  activity events. The agent extends the official `AbstractAgent` from `@ag-ui/client`, so the
+  client runtime verifies and applies the event stream exactly as it would for a remote agent.
+- **A2UI v0.9.1** describes the UI: surfaces, component trees and data models as declarative JSON.
+  An Angular catalog of 16 Orbit components renders them. They reuse the app's form controls and
+  chart container, so a surface looks native, follows the theme and mirrors in Arabic.
+
+**Deterministic by design.** A rules-based matcher with a phrase and keyword catalogue in English,
+Arabic and French routes requests. Anything outside the catalogue gets an honest "I didn't
+recognise that" and the list of supported requests. No language model, API key or backend is
+involved, so the demo is free, private and fully testable. Network latency is simulated, because
+a real agent's first event is never instant.
+
+**Trust boundaries.** Zod validates everything that crosses a boundary: the intent catalogue,
+scenario fixtures, run input, every A2UI payload (protocol version, catalog id, an allowlist of
+component types with strict props, size limits) and every user action. Malformed surfaces are
+blocked before the renderer sees them, and you can ask the assistant to demonstrate that. Writes
+go through allowlisted CRM commands. Moving a deal needs an explicit confirmation that must match
+the reviewed change, and it can be undone.
+
+**Transparency.** An *AG-UI events* tab lists every event of every run, with timings, payloads and
+schema validity, plus the agent's shared state.
+
+![AG-UI event inspector](screenshots/18-assistant-event-inspector.png)
+
+**Cost.** The assistant, AG-UI, A2UI and Zod form one lazy chunk (≈ 167 kB transferred) that
+loads only when the assistant first opens. Details, event flow and protocol examples are in
+[`docs/AGENTIC_DEMO.md`](../docs/AGENTIC_DEMO.md).
+
 ## Technical highlights
 
 - Reactive end-to-end: dragging a deal to *Won* updates revenue, win rate, charts, quota
@@ -159,16 +206,24 @@ strings in Arabic and French views, RTL drag & drop, unchanged monetary values a
 - Full RTL support with mirrored charts and bidi-safe formatting.
 - Keyboard-accessible alternatives for drag & drop, roving-tabindex tabs that follow reading
   direction, focus management and reduced-motion support.
-- Initial bundle of 574 kB raw (~155 kB transferred), with ECharts in a lazy chunk.
+- Signal Forms custom controls (`FormValueControl` / `FormCheckboxControl`) with localized errors,
+  ARIA combobox dropdowns and stable test ids, used by every form and filter.
+- A protocol-based agentic UI (AG-UI events → Zod-validated A2UI → Angular catalog) with
+  allowlisted, confirmable and undoable writes.
+- Page layouts use container-query breakpoints, so they reflow correctly beside the docked
+  assistant panel.
+- Initial bundle of ≈ 591 kB raw (≈ 160 kB transferred). ECharts and the assistant are lazy chunks.
 
 ## Testing and quality
 
 - TypeScript strict mode and angular-eslint (including template accessibility rules) pass.
-- 71 unit tests (Vitest) cover metric definitions, comparability rules, domain rules, the seed,
+- 126 unit tests (Vitest) cover metric definitions, comparability rules, domain rules, the seed,
   persistence/reset/recovery, CRUD and cascades, the language service, dictionary parity,
-  formatting and form validation in three languages.
-- 22 Playwright E2E tests run against the production build on desktop and mobile viewports — both
-  locally and against the live Vercel deployment; each fails on any browser console error.
+  formatting, form validation in three languages, and the form controls. For the assistant they
+  cover schemas, routing, AG-UI event ordering and validity, cancellation, latency and CRM actions.
+- 32 Playwright E2E tests run against the production build on desktop and mobile viewports.
+  `E2E_BASE_URL` points the same suite at a deployed site. Each test fails on any browser console
+  error.
 - The interface was reviewed visually at 1440, 768 and 390 px widths in English, Arabic and French
   and in dark mode; overflow, clipping and RTL issues found during review were fixed.
 
@@ -183,19 +238,32 @@ strings in Arabic and French views, RTL drag & drop, unchanged monetary values a
 | ![Arabic pipeline](screenshots/12-pipeline-arabic-rtl.png) | ![Arabic contacts](screenshots/13-contacts-arabic-rtl.png) |
 | ![French dashboard](screenshots/14-dashboard-french.png) | |
 
+| Assistant & form controls | |
+| --- | --- |
+| ![Assistant follow-up form](screenshots/17-assistant-follow-up-form.png) | ![Assistant in Arabic](screenshots/19-assistant-arabic-rtl.png) |
+| ![Form controls showcase](screenshots/21-form-controls-showcase.png) | ![Searchable select in the deal form](screenshots/22-custom-dropdown.png) |
+
 Mobile: [dashboard](screenshots/08-mobile-dashboard.png) ·
-[pipeline](screenshots/09-mobile-pipeline.png) · [Arabic RTL](screenshots/15-mobile-arabic-rtl.png)
+[pipeline](screenshots/09-mobile-pipeline.png) · [Arabic RTL](screenshots/15-mobile-arabic-rtl.png) ·
+[assistant](screenshots/20-mobile-assistant.png)
 
 ## Demo
 
 - **Live demo** — [orbit-crm-demo.vercel.app](https://orbit-crm-demo.vercel.app) (deployed on
-  Vercel from the GitHub repository; the full E2E suite passes against it).
+  Vercel from the GitHub repository).
 - **Product walkthrough** — [`videos/orbit-crm-walkthrough.mp4`](videos/orbit-crm-walkthrough.mp4)
-  (1920×1080, 30 fps, 72 s): dashboard and analytics, reports, dragging a deal to *Won* and seeing
-  the dashboard update, contacts, task completion, English → Arabic → French, mobile layout and
-  dark mode. Poster: [`cover/orbit-crm-video-poster.png`](cover/orbit-crm-video-poster.png).
+  (1920×1080, 30 fps, 127 s):
+  - dashboard and analytics, reports, dragging a deal to *Won* and seeing the dashboard update,
+    contacts, task completion;
+  - the demo assistant: a sales overview surface, creating a follow-up through a validated form,
+    and the AG-UI event inspector;
+  - the custom form controls in the deal form;
+  - English → Arabic → French, mobile layout and dark mode.
+
+  Poster: [`cover/orbit-crm-video-poster.png`](cover/orbit-crm-video-poster.png).
 - **Social short** — [`videos/orbit-crm-short.mp4`](videos/orbit-crm-short.mp4) (1080×1920,
-  30 fps, 26 s): mobile dashboard, moving a deal, switching to Arabic RTL and dark mode.
+  30 fps, 35 s): mobile dashboard, moving a deal, the assistant as a full-screen drawer, switching
+  to Arabic RTL and dark mode.
 
 Both videos were recorded from the running production build with scripted browser automation;
 captions and the pointer are overlays drawn outside the application.
@@ -206,4 +274,5 @@ Orbit CRM is a frontend-only interactive demonstration using local seeded data. 
 a static site, but it is not a multi-user production CRM: there is no backend, authentication, permissions, real-time
 collaboration or server-side validation, and data is stored in a single browser's `localStorage`.
 All companies, people and figures are fictional, and no performance numbers, customer outcomes or
-business results are claimed.
+business results are claimed. The demo assistant is scripted: it recognises a fixed catalogue of
+requests and uses no AI model.
