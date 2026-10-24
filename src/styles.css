@@ -9,6 +9,23 @@
 @custom-variant dark (&:where(.dark, .dark *));
 @custom-variant rtl (&:where([dir="rtl"], [dir="rtl"] *));
 
+/*
+  Page-width breakpoints. With the sidebar visible they switch exactly where
+  Tailwind's xl / 2xl do (sidebar = 15.5rem), but they measure the content
+  column (the shell's `@container/page`), so page layouts still fit when the
+  assistant panel is docked beside them.
+*/
+@custom-variant page-xl {
+  @container page (width >= 64.5rem) {
+    @slot;
+  }
+}
+@custom-variant page-2xl {
+  @container page (width >= 80.5rem) {
+    @slot;
+  }
+}
+
 :root {
   color-scheme: light;
 

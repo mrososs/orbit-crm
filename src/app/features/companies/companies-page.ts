@@ -122,10 +122,10 @@ import { Select } from '../../shared/ui/controls/select';
                     <ui-sort-header key="name" [label]="'companies.columns.name' | translate" [sort]="store.sort()" (sortChange)="setSort($event)" />
                   </th>
                   <th scope="col" class="hidden lg:table-cell">{{ 'companies.columns.industry' | translate }}</th>
-                  <th scope="col" class="hidden 2xl:table-cell" [attr.aria-sort]="sortAria('size')">
+                  <th scope="col" class="hidden page-2xl:table-cell" [attr.aria-sort]="sortAria('size')">
                     <ui-sort-header key="size" [label]="'companies.columns.size' | translate" [sort]="store.sort()" (sortChange)="setSort($event)" />
                   </th>
-                  <th scope="col" class="hidden xl:table-cell">{{ 'companies.columns.location' | translate }}</th>
+                  <th scope="col" class="hidden page-xl:table-cell">{{ 'companies.columns.location' | translate }}</th>
                   <th scope="col" class="text-end" [attr.aria-sort]="sortAria('contacts')">
                     <ui-sort-header key="contacts" defaultDirection="desc" [label]="'companies.columns.contacts' | translate" [sort]="store.sort()" (sortChange)="setSort($event)" />
                   </th>
@@ -152,8 +152,8 @@ import { Select } from '../../shared/ui/controls/select';
                       </div>
                     </td>
                     <td class="hidden text-fg-muted lg:table-cell">{{ 'enums.industry.' + row.company.industry | translate }}</td>
-                    <td class="hidden whitespace-nowrap text-fg-muted 2xl:table-cell">{{ 'enums.companySize.' + row.company.size | translate }}</td>
-                    <td class="hidden max-w-48 truncate text-fg-muted xl:table-cell">{{ row.company.city }}, {{ row.company.countryCode | region }}</td>
+                    <td class="hidden whitespace-nowrap text-fg-muted page-2xl:table-cell">{{ 'enums.companySize.' + row.company.size | translate }}</td>
+                    <td class="hidden max-w-48 truncate text-fg-muted page-xl:table-cell">{{ row.company.city }}, {{ row.company.countryCode | region }}</td>
                     <td class="text-end text-fg tabular">{{ row.contacts | num }}</td>
                     <td class="text-end text-fg tabular">{{ row.openPipeline | money }}</td>
                     <td class="text-end font-semibold text-fg tabular">{{ row.wonRevenue | money }}</td>

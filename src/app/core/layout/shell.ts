@@ -62,7 +62,7 @@ import { Topbar } from './topbar';
       </div>
     }
 
-    <div class="flex min-h-dvh min-w-0 flex-col lg:ps-[var(--sidebar-width)]" [style.padding-inline-end]="assistantDocked() ? 'var(--assistant-width)' : null">
+    <div class="@container/page flex min-h-dvh min-w-0 flex-col lg:ps-[var(--sidebar-width)]" [style.padding-inline-end]="assistantDocked() ? 'var(--assistant-width)' : null">
       <app-topbar (menu)="mobileNavOpen.set(true)" />
       <main id="main" tabindex="-1" class="min-w-0 flex-1 outline-none">
         @switch (workspace.status()) {

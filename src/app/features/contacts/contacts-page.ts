@@ -128,14 +128,14 @@ import { Select } from '../../shared/ui/controls/select';
                     <ui-sort-header key="name" [label]="'contacts.columns.name' | translate" [sort]="store.sort()" (sortChange)="setSort($event)" />
                   </th>
                   <th scope="col" class="hidden lg:table-cell">{{ 'contacts.columns.email' | translate }}</th>
-                  <th scope="col" class="hidden 2xl:table-cell">{{ 'contacts.columns.phone' | translate }}</th>
+                  <th scope="col" class="hidden page-2xl:table-cell">{{ 'contacts.columns.phone' | translate }}</th>
                   <th scope="col" [attr.aria-sort]="sortAria('company')">
                     <ui-sort-header key="company" [label]="'contacts.columns.company' | translate" [sort]="store.sort()" (sortChange)="setSort($event)" />
                   </th>
                   <th scope="col" [attr.aria-sort]="sortAria('status')">
                     <ui-sort-header key="status" [label]="'contacts.columns.status' | translate" [sort]="store.sort()" (sortChange)="setSort($event)" />
                   </th>
-                  <th scope="col" class="hidden 2xl:table-cell">{{ 'contacts.columns.source' | translate }}</th>
+                  <th scope="col" class="hidden page-2xl:table-cell">{{ 'contacts.columns.source' | translate }}</th>
                   <th scope="col" class="hidden lg:table-cell">{{ 'contacts.columns.owner' | translate }}</th>
                   <th scope="col" [attr.aria-sort]="sortAria('lastInteraction')">
                     <ui-sort-header
@@ -164,7 +164,7 @@ import { Select } from '../../shared/ui/controls/select';
                     <td class="hidden max-w-56 lg:table-cell">
                       <a class="ltr-content block truncate text-fg-muted hover:text-primary" [href]="'mailto:' + row.contact.email" (click)="$event.stopPropagation()">{{ row.contact.email }}</a>
                     </td>
-                    <td class="hidden whitespace-nowrap text-fg-muted 2xl:table-cell"><span class="ltr-content">{{ row.contact.phone }}</span></td>
+                    <td class="hidden whitespace-nowrap text-fg-muted page-2xl:table-cell"><span class="ltr-content">{{ row.contact.phone }}</span></td>
                     <td class="max-w-48">
                       @if (row.company) {
                         <span class="block truncate text-fg">{{ row.company }}</span>
@@ -173,7 +173,7 @@ import { Select } from '../../shared/ui/controls/select';
                       }
                     </td>
                     <td><app-status-badge [status]="row.contact.status" /></td>
-                    <td class="hidden text-fg-muted 2xl:table-cell">{{ 'enums.source.' + row.contact.source | translate }}</td>
+                    <td class="hidden text-fg-muted page-2xl:table-cell">{{ 'enums.source.' + row.contact.source | translate }}</td>
                     <td class="hidden lg:table-cell"><app-owner [ownerId]="row.contact.ownerId" [showName]="false" /></td>
                     <td class="whitespace-nowrap text-fg-muted">
                       {{ row.contact.lastInteractionAt ? (row.contact.lastInteractionAt | relativeTime) : ('common.never' | translate) }}

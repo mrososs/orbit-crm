@@ -34,8 +34,8 @@ const COMPLETED_PAGE = 10;
         </button>
       </header>
 
-      <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <section class="card min-w-0 overflow-hidden xl:col-span-2" aria-labelledby="tasks-heading">
+      <div class="grid grid-cols-1 gap-4 page-xl:grid-cols-3">
+        <section class="card min-w-0 overflow-hidden page-xl:col-span-2" aria-labelledby="tasks-heading">
           <h2 id="tasks-heading" class="sr-only">{{ 'activities.title' | translate }}</h2>
           <ui-tabs class="px-3" idPrefix="task-status" [tabs]="tabs()" [active]="store.status()" (activeChange)="setStatus($event)" [label]="'filters.status' | translate" />
 

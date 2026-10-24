@@ -41,14 +41,14 @@ import { Select } from '../../shared/ui/controls/select';
         </div>
       </header>
 
-      <div class="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+      <div class="grid grid-cols-2 gap-3 sm:gap-4 page-xl:grid-cols-4">
         @for (card of kpis(); track card.id) {
           <ui-stat-card [label]="card.label" [icon]="card.icon" [value]="card.value" [format]="card.format" [trend]="card.trend" [hint]="card.hint" [loading]="store.loading()" />
         }
       </div>
 
-      <div class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12">
-        <section class="card xl:col-span-8" aria-labelledby="r-revenue">
+      <div class="mt-4 grid grid-cols-1 gap-4 page-xl:grid-cols-12">
+        <section class="card page-xl:col-span-8" aria-labelledby="r-revenue">
           <div class="card-header">
             <div>
               <h2 id="r-revenue" class="card-title">{{ 'reports.revenueTrend' | translate }}</h2>
@@ -60,7 +60,7 @@ import { Select } from '../../shared/ui/controls/select';
           </div>
         </section>
 
-        <section class="card xl:col-span-4" aria-labelledby="r-conversion">
+        <section class="card page-xl:col-span-4" aria-labelledby="r-conversion">
           <div class="card-header">
             <div>
               <h2 id="r-conversion" class="card-title">{{ 'reports.conversion' | translate }}</h2>
@@ -73,7 +73,7 @@ import { Select } from '../../shared/ui/controls/select';
           </div>
         </section>
 
-        <section class="card xl:col-span-6" aria-labelledby="r-pipeline">
+        <section class="card page-xl:col-span-6" aria-labelledby="r-pipeline">
           <div class="card-header">
             <div>
               <h2 id="r-pipeline" class="card-title">{{ 'reports.pipelineAnalysis' | translate }}</h2>
@@ -85,7 +85,7 @@ import { Select } from '../../shared/ui/controls/select';
           </div>
         </section>
 
-        <section class="card xl:col-span-6" aria-labelledby="r-distribution">
+        <section class="card page-xl:col-span-6" aria-labelledby="r-distribution">
           <div class="card-header">
             <div>
               <h2 id="r-distribution" class="card-title">{{ 'reports.distribution' | translate }}</h2>
@@ -97,7 +97,7 @@ import { Select } from '../../shared/ui/controls/select';
           </div>
         </section>
 
-        <section class="card xl:col-span-12" aria-labelledby="r-team">
+        <section class="card page-xl:col-span-12" aria-labelledby="r-team">
           <div class="card-header">
             <div>
               <h2 id="r-team" class="card-title">{{ 'reports.team' | translate }}</h2>
@@ -153,7 +153,7 @@ import { Select } from '../../shared/ui/controls/select';
           </div>
         </section>
 
-        <section class="card xl:col-span-12" aria-labelledby="r-sources">
+        <section class="card page-xl:col-span-12" aria-labelledby="r-sources">
           <div class="card-header">
             <div>
               <h2 id="r-sources" class="card-title">{{ 'reports.sources' | translate }}</h2>

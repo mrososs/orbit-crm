@@ -50,9 +50,9 @@ import { Select } from '../../shared/ui/controls/select';
 
       <app-dashboard-kpis [kpis]="store.kpis()" [loading]="store.loading()" />
 
-      <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
+      <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2 page-xl:grid-cols-12">
         <!-- Revenue performance -->
-        <section class="card flex flex-col lg:col-span-2 xl:col-span-8" aria-labelledby="revenue-title">
+        <section class="card flex flex-col lg:col-span-2 page-xl:col-span-8" aria-labelledby="revenue-title">
           <div class="card-header flex-wrap">
             <div>
               <h2 id="revenue-title" class="card-title">{{ 'dashboard.revenueTitle' | translate }}</h2>
@@ -85,7 +85,7 @@ import { Select } from '../../shared/ui/controls/select';
         </section>
 
         <!-- Pipeline by stage -->
-        <section class="card flex flex-col xl:col-span-4" aria-labelledby="pipeline-title">
+        <section class="card flex flex-col page-xl:col-span-4" aria-labelledby="pipeline-title">
           <div class="card-header">
             <div>
               <h2 id="pipeline-title" class="card-title">{{ 'dashboard.pipelineTitle' | translate }}</h2>
@@ -110,7 +110,7 @@ import { Select } from '../../shared/ui/controls/select';
         </section>
 
         <!-- Deals won per month -->
-        <section class="card flex flex-col xl:col-span-4" aria-labelledby="won-title">
+        <section class="card flex flex-col page-xl:col-span-4" aria-labelledby="won-title">
           <div class="card-header">
             <div>
               <h2 id="won-title" class="card-title">{{ 'dashboard.wonTitle' | translate }}</h2>
@@ -132,7 +132,7 @@ import { Select } from '../../shared/ui/controls/select';
         </section>
 
         <!-- Lead sources -->
-        <section class="card flex flex-col xl:col-span-4" aria-labelledby="sources-title">
+        <section class="card flex flex-col page-xl:col-span-4" aria-labelledby="sources-title">
           <div class="card-header">
             <div>
               <h2 id="sources-title" class="card-title">{{ 'dashboard.sourcesTitle' | translate }}</h2>
@@ -177,7 +177,7 @@ import { Select } from '../../shared/ui/controls/select';
         </section>
 
         <!-- Recent activity -->
-        <section class="card flex flex-col lg:row-span-2 xl:col-span-4" aria-labelledby="feed-title">
+        <section class="card flex flex-col lg:row-span-2 page-xl:col-span-4" aria-labelledby="feed-title">
           <div class="card-header">
             <div>
               <h2 id="feed-title" class="card-title">{{ 'dashboard.feedTitle' | translate }}</h2>
@@ -199,7 +199,7 @@ import { Select } from '../../shared/ui/controls/select';
         </section>
 
         <!-- Team performance -->
-        <section class="card flex flex-col lg:col-span-1 xl:col-span-8" aria-labelledby="team-title">
+        <section class="card flex flex-col lg:col-span-1 page-xl:col-span-8" aria-labelledby="team-title">
           <div class="card-header">
             <div>
               <h2 id="team-title" class="card-title">{{ 'dashboard.teamTitle' | translate }}</h2>

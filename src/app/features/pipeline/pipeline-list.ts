@@ -26,7 +26,7 @@ import { DealMenu } from './stage-menu';
               <th scope="col" class="text-end">{{ 'deals.fields.value' | translate }}</th>
               <th scope="col" class="hidden md:table-cell">{{ 'deals.fields.owner' | translate }}</th>
               <th scope="col" class="hidden lg:table-cell">{{ 'deals.fields.closeDate' | translate }}</th>
-              <th scope="col" class="hidden xl:table-cell">{{ 'deals.fields.priority' | translate }}</th>
+              <th scope="col" class="hidden page-xl:table-cell">{{ 'deals.fields.priority' | translate }}</th>
               <th scope="col"><span class="sr-only">{{ 'common.actions' | translate }}</span></th>
             </tr>
           </thead>
@@ -60,7 +60,7 @@ import { DealMenu } from './stage-menu';
                   <td class="hidden text-fg-muted tabular lg:table-cell" [class.text-danger]="row.overdue">
                     {{ row.deal.expectedCloseDate | localDate }}
                   </td>
-                  <td class="hidden xl:table-cell"><app-priority-badge [priority]="row.deal.priority" /></td>
+                  <td class="hidden page-xl:table-cell"><app-priority-badge [priority]="row.deal.priority" /></td>
                   <td class="w-12 text-end" (click)="$event.stopPropagation()">
                     <app-deal-menu [deal]="row.deal" />
                   </td>
