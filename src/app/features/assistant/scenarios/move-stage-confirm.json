@@ -1,0 +1,19 @@
+{
+  "id": "move-stage-confirm",
+  "description": "Explicit confirmation surface shown before a stage move is executed.",
+  "components": [
+    {
+      "id": "root",
+      "component": "Confirmation",
+      "testId": "move-confirmation",
+      "title": { "call": "t", "args": { "key": "assistant.move.confirmTitle" } },
+      "message": { "call": "t", "args": { "key": "assistant.move.confirmMessage" } },
+      "details": { "path": "/details" },
+      "status": { "path": "/status" },
+      "confirmLabel": { "call": "t", "args": { "key": "assistant.move.confirm" } },
+      "cancelLabel": { "call": "t", "args": { "key": "common.cancel" } },
+      "confirmAction": { "event": { "name": "deal.confirmMove", "context": { "dealId": { "path": "/move/dealId" }, "stage": { "path": "/move/stage" } } } },
+      "cancelAction": { "event": { "name": "deal.cancelMove", "context": {} } }
+    }
+  ]
+}

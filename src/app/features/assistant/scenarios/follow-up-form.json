@@ -1,0 +1,113 @@
+{
+  "id": "follow-up-form",
+  "description": "Follow-up task form. Options are real contacts, open deals and team members; values live in the surface data model and are submitted as an A2UI action.",
+  "components": [
+    {
+      "id": "root",
+      "component": "Card",
+      "icon": "calendar-check",
+      "title": { "call": "t", "args": { "key": "assistant.followUp.title" } },
+      "subtitle": { "call": "t", "args": { "key": "assistant.followUp.subtitle" } },
+      "child": "form"
+    },
+    {
+      "id": "form",
+      "component": "Form",
+      "testId": "followup-form",
+      "child": "fields",
+      "status": { "path": "/status" },
+      "submitLabel": { "call": "t", "args": { "key": "assistant.followUp.submit" } },
+      "cancelLabel": { "call": "t", "args": { "key": "common.cancel" } },
+      "action": {
+        "event": {
+          "name": "followUp.submit",
+          "context": {
+            "subject": { "path": "/form/subject" },
+            "dueDate": { "path": "/form/dueDate" },
+            "dueTime": { "path": "/form/dueTime" },
+            "priority": { "path": "/form/priority" },
+            "ownerId": { "path": "/form/ownerId" },
+            "contactId": { "path": "/form/contactId" },
+            "dealId": { "path": "/form/dealId" }
+          }
+        }
+      },
+      "cancelAction": { "event": { "name": "followUp.cancel", "context": {} } }
+    },
+    { "id": "fields", "component": "Column", "gap": "md", "children": ["subject", "when", "contact", "deal", "meta"] },
+    {
+      "id": "subject",
+      "component": "TextField",
+      "testId": "followup-subject",
+      "maxLength": 120,
+      "label": { "call": "t", "args": { "key": "assistant.fields.subject" } },
+      "placeholder": { "call": "t", "args": { "key": "assistant.fields.subjectPlaceholder" } },
+      "value": { "path": "/form/subject" },
+      "error": { "path": "/errors/subject" }
+    },
+    { "id": "when", "component": "Grid", "columns": 2, "children": ["due-date", "due-time"] },
+    {
+      "id": "due-date",
+      "component": "DateField",
+      "testId": "followup-date",
+      "shortcuts": true,
+      "minDate": { "path": "/today" },
+      "label": { "call": "t", "args": { "key": "assistant.fields.dueDate" } },
+      "value": { "path": "/form/dueDate" },
+      "error": { "path": "/errors/dueDate" }
+    },
+    {
+      "id": "due-time",
+      "component": "DateField",
+      "testId": "followup-time",
+      "type": "time",
+      "label": { "call": "t", "args": { "key": "assistant.fields.dueTime" } },
+      "value": { "path": "/form/dueTime" },
+      "error": { "path": "/errors/dueTime" }
+    },
+    {
+      "id": "contact",
+      "component": "SelectField",
+      "testId": "followup-contact",
+      "searchable": true,
+      "optional": true,
+      "label": { "call": "t", "args": { "key": "assistant.fields.contact" } },
+      "placeholder": { "call": "t", "args": { "key": "assistant.fields.searchContacts" } },
+      "options": { "path": "/options/contacts" },
+      "value": { "path": "/form/contactId" },
+      "error": { "path": "/errors/contactId" },
+      "hint": { "call": "t", "args": { "key": "assistant.followUp.linkHint" } }
+    },
+    {
+      "id": "deal",
+      "component": "SelectField",
+      "testId": "followup-deal",
+      "searchable": true,
+      "optional": true,
+      "label": { "call": "t", "args": { "key": "assistant.fields.deal" } },
+      "placeholder": { "call": "t", "args": { "key": "assistant.fields.searchDeals" } },
+      "options": { "path": "/options/deals" },
+      "value": { "path": "/form/dealId" },
+      "error": { "path": "/errors/dealId" }
+    },
+    { "id": "meta", "component": "Grid", "columns": 2, "children": ["priority", "owner"] },
+    {
+      "id": "priority",
+      "component": "SelectField",
+      "testId": "followup-priority",
+      "label": { "call": "t", "args": { "key": "assistant.fields.priority" } },
+      "options": { "path": "/options/priorities" },
+      "value": { "path": "/form/priority" },
+      "error": { "path": "/errors/priority" }
+    },
+    {
+      "id": "owner",
+      "component": "SelectField",
+      "testId": "followup-owner",
+      "label": { "call": "t", "args": { "key": "assistant.fields.owner" } },
+      "options": { "path": "/options/owners" },
+      "value": { "path": "/form/ownerId" },
+      "error": { "path": "/errors/ownerId" }
+    }
+  ]
+}

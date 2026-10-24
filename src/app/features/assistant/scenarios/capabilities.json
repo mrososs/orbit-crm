@@ -1,0 +1,63 @@
+{
+  "id": "capabilities",
+  "description": "What the demo agent supports, as buttons that start each scenario. Used for help and for unrecognised requests.",
+  "components": [
+    { "id": "root", "component": "Column", "gap": "sm", "children": ["intro", "options"] },
+    {
+      "id": "intro",
+      "component": "Text",
+      "variant": "caption",
+      "tone": "muted",
+      "text": { "call": "t", "args": { "key": "assistant.help.intro" } }
+    },
+    { "id": "options", "component": "Grid", "columns": 2, "children": ["overview", "deals", "overdue", "follow-up", "filter", "move"] },
+    {
+      "id": "overview",
+      "component": "Button",
+      "variant": "secondary",
+      "icon": "chart-column",
+      "label": { "call": "t", "args": { "key": "assistant.suggestions.salesOverview" } },
+      "action": { "event": { "name": "prompt.run", "context": { "intent": "salesOverview" } } }
+    },
+    {
+      "id": "deals",
+      "component": "Button",
+      "variant": "secondary",
+      "icon": "briefcase",
+      "label": { "call": "t", "args": { "key": "assistant.suggestions.topDeals" } },
+      "action": { "event": { "name": "prompt.run", "context": { "intent": "topDeals" } } }
+    },
+    {
+      "id": "overdue",
+      "component": "Button",
+      "variant": "secondary",
+      "icon": "calendar-clock",
+      "label": { "call": "t", "args": { "key": "assistant.suggestions.overdueTasks" } },
+      "action": { "event": { "name": "prompt.run", "context": { "intent": "overdueTasks" } } }
+    },
+    {
+      "id": "follow-up",
+      "component": "Button",
+      "variant": "secondary",
+      "icon": "calendar-check",
+      "label": { "call": "t", "args": { "key": "assistant.suggestions.createFollowUp" } },
+      "action": { "event": { "name": "prompt.run", "context": { "intent": "createFollowUp" } } }
+    },
+    {
+      "id": "filter",
+      "component": "Button",
+      "variant": "secondary",
+      "icon": "funnel",
+      "label": { "call": "t", "args": { "key": "assistant.suggestions.dealsFilter" } },
+      "action": { "event": { "name": "prompt.run", "context": { "intent": "dealsFilter" } } }
+    },
+    {
+      "id": "move",
+      "component": "Button",
+      "variant": "secondary",
+      "icon": "arrow-right-left",
+      "label": { "call": "t", "args": { "key": "assistant.suggestions.moveDealStage" } },
+      "action": { "event": { "name": "prompt.run", "context": { "intent": "moveDealStage" } } }
+    }
+  ]
+}

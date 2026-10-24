@@ -1,0 +1,96 @@
+{
+  "id": "sales-overview",
+  "description": "KPI tiles and the open pipeline by stage, computed with the dashboard's own metric functions for its default period.",
+  "components": [
+    { "id": "root", "component": "Column", "children": ["period", "kpis", "pipeline-card", "actions"] },
+    {
+      "id": "period",
+      "component": "Text",
+      "variant": "caption",
+      "tone": "muted",
+      "text": { "call": "t", "args": { "key": "assistant.overview.period", "params": { "start": { "call": "formatDate", "args": { "value": { "path": "/rangeStart" }, "style": "medium" } }, "end": { "call": "formatDate", "args": { "value": { "path": "/rangeEnd" }, "style": "medium" } } } } }
+    },
+    { "id": "kpis", "component": "Grid", "columns": 2, "children": ["kpi-revenue", "kpi-pipeline", "kpi-win-rate", "kpi-follow-ups"] },
+    {
+      "id": "kpi-revenue",
+      "component": "Metric",
+      "testId": "a2ui-kpi-revenue",
+      "icon": "circle-dollar-sign",
+      "format": "currency",
+      "label": { "call": "t", "args": { "key": "kpi.totalRevenue" } },
+      "value": { "path": "/kpis/revenue" },
+      "change": { "path": "/kpis/revenueChange" },
+      "hint": { "call": "plural", "args": { "key": "kpi.revenueHint", "count": { "path": "/kpis/dealsWon" } } }
+    },
+    {
+      "id": "kpi-pipeline",
+      "component": "Metric",
+      "testId": "a2ui-kpi-pipeline",
+      "icon": "layers",
+      "format": "currency",
+      "label": { "call": "t", "args": { "key": "kpi.pipelineValue" } },
+      "value": { "path": "/kpis/pipeline" },
+      "hint": { "call": "t", "args": { "key": "kpi.pipelineHint", "params": { "value": { "call": "formatCurrency", "args": { "value": { "path": "/kpis/weighted" }, "compact": true } } } } }
+    },
+    {
+      "id": "kpi-win-rate",
+      "component": "Metric",
+      "testId": "a2ui-kpi-win-rate",
+      "icon": "trophy",
+      "format": "percent",
+      "label": { "call": "t", "args": { "key": "kpi.winRate" } },
+      "value": { "path": "/kpis/winRate" }
+    },
+    {
+      "id": "kpi-follow-ups",
+      "component": "Metric",
+      "testId": "a2ui-kpi-follow-ups",
+      "icon": "list-todo",
+      "format": "number",
+      "label": { "call": "t", "args": { "key": "kpi.openFollowUps" } },
+      "value": { "path": "/kpis/followUps" },
+      "hint": { "call": "plural", "args": { "key": "assistant.overview.overdueHint", "count": { "path": "/kpis/overdue" } } }
+    },
+    {
+      "id": "pipeline-card",
+      "component": "Card",
+      "icon": "kanban",
+      "title": { "call": "t", "args": { "key": "assistant.overview.pipelineTitle" } },
+      "subtitle": { "call": "plural", "args": { "key": "assistant.overview.pipelineSubtitle", "count": { "path": "/kpis/openDeals" } } },
+      "child": "pipeline-chart"
+    },
+    {
+      "id": "pipeline-chart",
+      "component": "Chart",
+      "kind": "pipelineByStage",
+      "height": 220,
+      "data": { "path": "/stages" },
+      "label": { "call": "t", "args": { "key": "assistant.overview.pipelineTitle" } }
+    },
+    { "id": "actions", "component": "Row", "children": ["open-dashboard", "ask-deals", "ask-overdue"] },
+    {
+      "id": "open-dashboard",
+      "component": "Link",
+      "variant": "button",
+      "icon": "layout-dashboard",
+      "label": { "call": "t", "args": { "key": "assistant.actions.openDashboard" } },
+      "to": { "page": "dashboard" }
+    },
+    {
+      "id": "ask-deals",
+      "component": "Button",
+      "variant": "ghost",
+      "icon": "briefcase",
+      "label": { "call": "t", "args": { "key": "assistant.suggestions.topDeals" } },
+      "action": { "event": { "name": "prompt.run", "context": { "intent": "topDeals" } } }
+    },
+    {
+      "id": "ask-overdue",
+      "component": "Button",
+      "variant": "ghost",
+      "icon": "calendar-clock",
+      "label": { "call": "t", "args": { "key": "assistant.suggestions.overdueTasks" } },
+      "action": { "event": { "name": "prompt.run", "context": { "intent": "overdueTasks" } } }
+    }
+  ]
+}

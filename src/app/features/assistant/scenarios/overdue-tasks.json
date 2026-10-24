@@ -1,0 +1,38 @@
+{
+  "id": "overdue-tasks",
+  "description": "Open activities due before today, oldest first, linked to their contact and deal.",
+  "components": [
+    { "id": "root", "component": "Column", "children": ["summary", "list", "footer"] },
+    {
+      "id": "summary",
+      "component": "Text",
+      "variant": "label",
+      "tone": "warning",
+      "text": { "call": "plural", "args": { "key": "assistant.overdue.summary", "count": { "path": "/total" } } }
+    },
+    {
+      "id": "list",
+      "component": "RecordList",
+      "testId": "a2ui-overdue-list",
+      "items": { "path": "/items" },
+      "emptyText": { "call": "t", "args": { "key": "assistant.overdue.empty" } }
+    },
+    { "id": "footer", "component": "Row", "justify": "between", "children": ["open-tasks", "create-follow-up"] },
+    {
+      "id": "open-tasks",
+      "component": "Link",
+      "variant": "button",
+      "icon": "list-todo",
+      "label": { "call": "t", "args": { "key": "assistant.actions.openTasks" } },
+      "to": { "page": "activities" }
+    },
+    {
+      "id": "create-follow-up",
+      "component": "Button",
+      "variant": "primary",
+      "icon": "calendar-check",
+      "label": { "call": "t", "args": { "key": "assistant.suggestions.createFollowUp" } },
+      "action": { "event": { "name": "prompt.run", "context": { "intent": "createFollowUp" } } }
+    }
+  ]
+}

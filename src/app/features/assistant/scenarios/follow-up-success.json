@@ -1,0 +1,31 @@
+{
+  "id": "follow-up-success",
+  "description": "Confirmation after CrmService.createActivity() succeeded, with links to the new task and its related records.",
+  "components": [
+    { "id": "root", "component": "Column", "children": ["notice", "task", "links"] },
+    {
+      "id": "notice",
+      "component": "Notice",
+      "tone": "success",
+      "testId": "a2ui-followup-created",
+      "title": { "call": "t", "args": { "key": "assistant.followUp.createdTitle" } },
+      "message": { "call": "t", "args": { "key": "assistant.followUp.createdMessage", "params": { "date": { "call": "formatDate", "args": { "value": { "path": "/dueAt" }, "style": "dateTime" } } } } }
+    },
+    {
+      "id": "task",
+      "component": "RecordList",
+      "items": { "path": "/created" },
+      "emptyText": { "call": "t", "args": { "key": "assistant.followUp.createdTitle" } }
+    },
+    { "id": "links", "component": "Row", "children": ["open-tasks"] },
+    {
+      "id": "open-tasks",
+      "component": "Link",
+      "variant": "button",
+      "icon": "list-todo",
+      "testId": "a2ui-open-tasks",
+      "label": { "call": "t", "args": { "key": "assistant.actions.openTasks" } },
+      "to": { "page": "activities" }
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "id": "deals-filter",
+  "description": "Read-only deal list filtered by owner and stage; changing a filter dispatches dealList.filter and the agent refreshes the data model.",
+  "components": [
+    { "id": "root", "component": "Column", "children": ["filters", "summary", "list"] },
+    { "id": "filters", "component": "Grid", "columns": 2, "children": ["owner", "stage"] },
+    {
+      "id": "owner",
+      "component": "SelectField",
+      "testId": "a2ui-filter-owner",
+      "label": { "call": "t", "args": { "key": "assistant.fields.owner" } },
+      "options": { "path": "/options/owners" },
+      "value": { "path": "/filters/ownerId" },
+      "action": { "event": { "name": "dealList.filter", "context": { "ownerId": { "path": "/filters/ownerId" }, "stage": { "path": "/filters/stage" } } } }
+    },
+    {
+      "id": "stage",
+      "component": "SelectField",
+      "testId": "a2ui-filter-stage",
+      "label": { "call": "t", "args": { "key": "assistant.fields.stage" } },
+      "options": { "path": "/options/stages" },
+      "value": { "path": "/filters/stage" },
+      "action": { "event": { "name": "dealList.filter", "context": { "ownerId": { "path": "/filters/ownerId" }, "stage": { "path": "/filters/stage" } } } }
+    },
+    { "id": "summary", "component": "Grid", "columns": 2, "children": ["count", "value"] },
+    {
+      "id": "count",
+      "component": "Metric",
+      "testId": "a2ui-filter-count",
+      "icon": "funnel",
+      "format": "number",
+      "label": { "call": "t", "args": { "key": "assistant.filters.matching" } },
+      "value": { "path": "/total" }
+    },
+    {
+      "id": "value",
+      "component": "Metric",
+      "icon": "circle-dollar-sign",
+      "format": "currency",
+      "label": { "call": "t", "args": { "key": "assistant.filters.value" } },
+      "value": { "path": "/totalValue" }
+    },
+    {
+      "id": "list",
+      "component": "RecordList",
+      "testId": "a2ui-filter-list",
+      "items": { "path": "/items" },
+      "emptyText": { "call": "t", "args": { "key": "assistant.filters.empty" } }
+    }
+  ]
+}

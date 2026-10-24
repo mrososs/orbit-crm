@@ -1,0 +1,47 @@
+{
+  "id": "move-stage-form",
+  "description": "Pick an open deal and a target stage; the agent validates the request and asks for confirmation before calling CrmService.moveDeal().",
+  "components": [
+    {
+      "id": "root",
+      "component": "Card",
+      "icon": "arrow-right-left",
+      "title": { "call": "t", "args": { "key": "assistant.move.title" } },
+      "subtitle": { "call": "t", "args": { "key": "assistant.move.subtitle" } },
+      "child": "form"
+    },
+    {
+      "id": "form",
+      "component": "Form",
+      "testId": "move-form",
+      "child": "fields",
+      "status": { "path": "/status" },
+      "submitLabel": { "call": "t", "args": { "key": "assistant.move.review" } },
+      "cancelLabel": { "call": "t", "args": { "key": "common.cancel" } },
+      "action": { "event": { "name": "deal.reviewMove", "context": { "dealId": { "path": "/form/dealId" }, "stage": { "path": "/form/stage" } } } },
+      "cancelAction": { "event": { "name": "deal.cancelMove", "context": {} } }
+    },
+    { "id": "fields", "component": "Column", "gap": "md", "children": ["deal", "stage"] },
+    {
+      "id": "deal",
+      "component": "SelectField",
+      "testId": "move-deal",
+      "searchable": true,
+      "label": { "call": "t", "args": { "key": "assistant.fields.deal" } },
+      "placeholder": { "call": "t", "args": { "key": "assistant.fields.searchDeals" } },
+      "options": { "path": "/options/deals" },
+      "value": { "path": "/form/dealId" },
+      "error": { "path": "/errors/dealId" }
+    },
+    {
+      "id": "stage",
+      "component": "SelectField",
+      "testId": "move-stage",
+      "label": { "call": "t", "args": { "key": "assistant.fields.targetStage" } },
+      "placeholder": { "call": "t", "args": { "key": "assistant.fields.chooseStage" } },
+      "options": { "path": "/options/stages" },
+      "value": { "path": "/form/stage" },
+      "error": { "path": "/errors/stage" }
+    }
+  ]
+}

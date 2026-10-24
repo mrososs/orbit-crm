@@ -694,7 +694,8 @@
     "duplicateEmail": "A contact with this email already exists",
     "duplicateCompany": "A company with this name already exists",
     "number": "Enter a number",
-    "amount": "Enter a valid amount, e.g. 12500"
+    "amount": "Enter a valid amount, e.g. 12500",
+    "subjectLength": "Enter between 3 and 120 characters"
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -801,6 +802,221 @@
     "validation": {
       "future": "Choose today or a later date",
       "terms": "Please confirm to continue"
+    }
+  },
+  "assistant": {
+    "title": "Interactive Demo Assistant",
+    "subtitle": "Scripted demo · no AI model · runs in your browser",
+    "button": "Assistant",
+    "open": "Open the demo assistant",
+    "tooltip": "Interactive demo assistant (scripted, no AI model)",
+    "close": "Close assistant",
+    "reset": "New conversation",
+    "loading": "Loading the demo assistant…",
+    "conversation": "Conversation",
+    "toolsUsed": "CRM tools used",
+    "cancelled": "Response stopped.",
+    "tabs": {
+      "chat": "Chat",
+      "events": "AG-UI events"
+    },
+    "welcome": {
+      "title": "Ask about this workspace",
+      "text": "I answer a fixed set of CRM questions with live data from this demo workspace — try a suggestion below.",
+      "disclaimer": "Rules-based demo agent — not an AI model"
+    },
+    "suggestions": {
+      "title": "Try asking",
+      "salesOverview": "Show me the sales overview",
+      "topDeals": "Show my biggest open deals",
+      "overdueTasks": "What tasks are overdue?",
+      "createFollowUp": "Create a follow-up task",
+      "dealsFilter": "Show deals by owner",
+      "moveDealStage": "Update a deal stage"
+    },
+    "composer": {
+      "label": "Message the demo assistant",
+      "placeholder": "Ask about sales, deals or tasks…",
+      "send": "Send message",
+      "stop": "Stop response",
+      "hint": "Enter to send · Shift+Enter for a new line"
+    },
+    "steps": {
+      "thinking": "Working on it…",
+      "query_crm": "Querying CRM records…",
+      "render_surface": "Building the interface…",
+      "validate_input": "Validating your input…",
+      "execute_command": "Updating the CRM…",
+      "connecting": "Connecting to the demo agent…"
+    },
+    "overview": {
+      "intro": "Here's the sales overview, using the same calculations as the dashboard.",
+      "period": "{{start}} – {{end}} · whole team",
+      "pipelineTitle": "Open pipeline by stage",
+      "pipelineSubtitle": {
+        "one": "{{count}} open deal",
+        "other": "{{count}} open deals"
+      },
+      "overdueHint": {
+        "one": "{{count}} overdue",
+        "other": "{{count}} overdue"
+      },
+      "outro": "Nothing is overdue. Ask me for your biggest deals next.",
+      "outroOverdue": {
+        "one": "Heads-up: {{count}} follow-up is overdue.",
+        "other": "Heads-up: {{count}} follow-ups are overdue."
+      }
+    },
+    "deals": {
+      "introMine": "These are your largest open deals, by value.",
+      "introTeam": "These are the team's largest open deals, by value.",
+      "countMine": "Your open deals",
+      "countTeam": "Team open deals",
+      "showTeam": "Show the whole team",
+      "showMine": "Show only mine",
+      "moveStage": "Move stage",
+      "empty": "No open deals.",
+      "none": "There are no open deals to show.",
+      "outro": {
+        "one": "{{count}} open deal in total. Use “Move stage” to update it.",
+        "other": "{{count}} open deals in total. Use “Move stage” to update one."
+      }
+    },
+    "overdue": {
+      "intro": "Let me check for overdue follow-ups.",
+      "summary": {
+        "one": "{{count}} task is overdue",
+        "other": "{{count}} tasks are overdue"
+      },
+      "empty": "Nothing is overdue. Nice work!",
+      "none": "You're all caught up — no overdue tasks.",
+      "outro": {
+        "one": "Here is the overdue task.",
+        "other": "Here are the {{count}} overdue tasks, oldest first."
+      }
+    },
+    "followUp": {
+      "intro": "Fill in the details and I'll create the task with the same rules as the Tasks page.",
+      "title": "New follow-up task",
+      "subtitle": "Linked to a contact or a deal",
+      "submit": "Create task",
+      "linkHint": "Link a contact, a deal, or both.",
+      "invalid": {
+        "one": "{{count}} field needs a fix before I can create the task.",
+        "other": "{{count}} fields need a fix before I can create the task."
+      },
+      "done": "Done — “{{subject}}” is on the Tasks page.",
+      "createdTitle": "Follow-up created",
+      "createdMessage": "Due {{date}}",
+      "cancelled": "No problem — nothing was created."
+    },
+    "fields": {
+      "subject": "Subject",
+      "subjectPlaceholder": "e.g. Call about the renewal",
+      "dueDate": "Due date",
+      "dueTime": "Time",
+      "contact": "Contact",
+      "searchContacts": "Search contacts…",
+      "deal": "Deal",
+      "searchDeals": "Search open deals…",
+      "priority": "Priority",
+      "owner": "Owner",
+      "stage": "Stage",
+      "targetStage": "Move to stage",
+      "chooseStage": "Choose a stage"
+    },
+    "filters": {
+      "intro": "Pick an owner and a stage — the list updates as you change them.",
+      "outro": "This list is read-only; it reads the same deals as the pipeline.",
+      "matching": "Matching deals",
+      "value": "Total value",
+      "empty": "No deals match these filters.",
+      "allOwners": "All owners",
+      "openStages": "All open stages"
+    },
+    "move": {
+      "intro": "Choose a deal and its new stage. I'll ask you to confirm before changing anything.",
+      "title": "Update a deal stage",
+      "subtitle": "Changes follow the pipeline's own rules",
+      "review": "Review change",
+      "invalid": "Please check the highlighted fields.",
+      "reviewText": "Please confirm this change.",
+      "confirmTitle": "Confirm stage change",
+      "confirmMessage": "This updates the pipeline, dashboard figures and the deal's timeline. You can undo it afterwards.",
+      "confirm": "Confirm move",
+      "dealLabel": "Deal",
+      "fromLabel": "From",
+      "toLabel": "To",
+      "valueLabel": "Value",
+      "doneTitle": "Stage updated",
+      "undoneTitle": "Change undone",
+      "doneText": "“{{deal}}” is now in {{stage}}.",
+      "undoneText": "Undone — “{{deal}}” is back in {{stage}}.",
+      "undoUnavailable": "That change can no longer be undone here.",
+      "cancelled": "Okay — the deal was not changed."
+    },
+    "help": {
+      "text": "I'm a scripted demo assistant. Here is what I can do with this workspace:",
+      "intro": "Each option runs a real query or update against the demo data."
+    },
+    "fallback": {
+      "text": "I'm a rules-based demo, so I didn't recognise that request. I can help with these:"
+    },
+    "malformed": {
+      "intro": "Sending a deliberately malformed interface payload to test client-side validation…",
+      "outro": "The client should reject it before rendering — open the AG-UI events tab to see why."
+    },
+    "records": {
+      "due": "Due {{date}}",
+      "closes": "Closes {{date}}"
+    },
+    "form": {
+      "submitted": "Submitted",
+      "cancelled": "Cancelled",
+      "confirmed": "Confirmed"
+    },
+    "validation": {
+      "pastDate": "Choose today or a later date",
+      "unknownRecord": "Choose an option from the list",
+      "linkRecord": "Link a contact or a deal",
+      "chooseDeal": "Choose an open deal",
+      "chooseStage": "Choose a stage",
+      "sameStage": "The deal is already in this stage"
+    },
+    "errors": {
+      "staleSurface": "That card belongs to an earlier conversation, so I can't act on it.",
+      "invalidAction": "That request doesn't match anything I prepared, so I ignored it.",
+      "invalidData": "This card received data it couldn't display.",
+      "noChartData": "No open deals to chart",
+      "rejectedTitle": "Response blocked",
+      "rejectedText": "It contained interface elements outside the Orbit component catalog, so nothing from it was rendered or run.",
+      "rejectedDetails": "Validation details",
+      "blockedAction": "An interface action was blocked by validation.",
+      "runFailed": "The demo agent couldn't complete that request."
+    },
+    "inspector": {
+      "intro": "Every run streams AG-UI events from the local agent. A2UI interface payloads travel inside ACTIVITY_SNAPSHOT and ACTIVITY_DELTA events.",
+      "empty": "No runs yet — send a message to see the event stream.",
+      "status": {
+        "running": "Running",
+        "success": "Finished",
+        "cancelled": "Cancelled",
+        "error": "Error"
+      },
+      "trigger": {
+        "message": "Typed message",
+        "suggestion": "Suggested prompt",
+        "action": "Action: {{name}}"
+      },
+      "invalid": "invalid",
+      "state": "Agent state",
+      "stateHint": "Rebuilt on the client from STATE_SNAPSHOT and STATE_DELTA events.",
+      "latency": "Network latency is simulated, as with a remote agent: about 0.5–1 s before the first event and 0.35–0.8 s per CRM tool call."
+    },
+    "actions": {
+      "openDashboard": "Open dashboard",
+      "openPipeline": "Open pipeline",
+      "openTasks": "Open Tasks"
     }
   }
 }

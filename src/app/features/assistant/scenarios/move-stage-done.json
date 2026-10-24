@@ -1,0 +1,34 @@
+{
+  "id": "move-stage-done",
+  "description": "Result of CrmService.moveDeal(), with Undo (CrmService.undoMove()) and links to the deal and the pipeline.",
+  "components": [
+    { "id": "root", "component": "Column", "children": ["notice", "deal", "actions"] },
+    {
+      "id": "notice",
+      "component": "Notice",
+      "tone": "success",
+      "testId": "a2ui-move-result",
+      "title": { "call": "t", "args": { "key": { "path": "/titleKey" } } }
+    },
+    { "id": "deal", "component": "RecordList", "items": { "path": "/items" }, "emptyText": { "call": "t", "args": { "key": "assistant.deals.empty" } } },
+    { "id": "actions", "component": "Row", "children": ["undo", "open-pipeline"] },
+    {
+      "id": "undo",
+      "component": "Button",
+      "variant": "secondary",
+      "icon": "undo-2",
+      "testId": "a2ui-undo-move",
+      "disabled": { "path": "/undone" },
+      "label": { "call": "t", "args": { "key": "common.undo" } },
+      "action": { "event": { "name": "deal.undoMove", "context": { "receiptId": { "path": "/receiptId" } } } }
+    },
+    {
+      "id": "open-pipeline",
+      "component": "Link",
+      "variant": "button",
+      "icon": "kanban",
+      "label": { "call": "t", "args": { "key": "assistant.actions.openPipeline" } },
+      "to": { "page": "pipeline" }
+    }
+  ]
+}

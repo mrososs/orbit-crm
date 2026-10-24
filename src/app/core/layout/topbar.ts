@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Tooltip } from '../../shared/ui/tooltip';
 import { ThemeService } from '../services/theme.service';
 import { ViewportService } from '../services/viewport.service';
+import { AssistantLauncher } from './assistant-launcher.service';
 import { CommandPaletteService } from './command-palette.service';
 import { LanguageSwitcher } from './language-switcher';
 import { Logo } from './logo';
@@ -54,6 +55,24 @@ import { QuickCreate } from './quick-create';
         >
           <svg lucideIcon="search" [size]="17" aria-hidden="true"></svg>
         </button>
+        <button
+          type="button"
+          class="btn btn-sm gap-1.5"
+          [class]="assistant.isOpen() ? 'btn-soft' : 'btn-ghost'"
+          [class.btn-icon]="!viewport.isDesktop()"
+          aria-controls="assistant-panel"
+          [attr.aria-expanded]="assistant.isOpen()"
+          [attr.aria-label]="!viewport.isDesktop() ? ('assistant.open' | translate) : null"
+          [uiTooltip]="'assistant.tooltip' | translate"
+          tooltipPosition="bottom"
+          (click)="assistant.toggle()"
+          data-testid="assistant-toggle"
+        >
+          <svg lucideIcon="bot" [size]="17" aria-hidden="true"></svg>
+          @if (viewport.isDesktop()) {
+            <span>{{ 'assistant.button' | translate }}</span>
+          }
+        </button>
         <app-language-switcher [compact]="!viewport.isDesktop()" />
         <button
           type="button"
@@ -80,5 +99,6 @@ export class Topbar {
   protected readonly theme = inject(ThemeService);
   protected readonly palette = inject(CommandPaletteService);
   protected readonly viewport = inject(ViewportService);
+  protected readonly assistant = inject(AssistantLauncher);
   readonly menu = output<void>();
 }

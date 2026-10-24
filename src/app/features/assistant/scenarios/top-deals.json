@@ -1,0 +1,52 @@
+{
+  "id": "top-deals",
+  "description": "The largest open deals, from the live deals store, with links and a stage-move action per deal.",
+  "components": [
+    { "id": "root", "component": "Column", "children": ["summary", "list", "footer"] },
+    { "id": "summary", "component": "Grid", "columns": 2, "children": ["count", "value"] },
+    {
+      "id": "count",
+      "component": "Metric",
+      "testId": "a2ui-deals-count",
+      "icon": "briefcase",
+      "format": "number",
+      "label": { "call": "t", "args": { "key": { "path": "/countKey" } } },
+      "value": { "path": "/total" }
+    },
+    {
+      "id": "value",
+      "component": "Metric",
+      "testId": "a2ui-deals-value",
+      "icon": "circle-dollar-sign",
+      "format": "currency",
+      "label": { "call": "t", "args": { "key": "kpi.pipelineValue" } },
+      "value": { "path": "/totalValue" }
+    },
+    {
+      "id": "list",
+      "component": "RecordList",
+      "testId": "a2ui-deal-list",
+      "items": { "path": "/items" },
+      "emptyText": { "call": "t", "args": { "key": "assistant.deals.empty" } },
+      "itemAction": { "name": "deal.startMove", "label": { "call": "t", "args": { "key": "assistant.deals.moveStage" } } }
+    },
+    { "id": "footer", "component": "Row", "justify": "between", "children": ["toggle-scope", "open-pipeline"] },
+    {
+      "id": "toggle-scope",
+      "component": "Button",
+      "variant": "secondary",
+      "icon": "users",
+      "testId": "a2ui-toggle-scope",
+      "label": { "call": "t", "args": { "key": { "path": "/toggleKey" } } },
+      "action": { "event": { "name": "dealList.scope", "context": { "scope": { "path": "/otherScope" } } } }
+    },
+    {
+      "id": "open-pipeline",
+      "component": "Link",
+      "variant": "button",
+      "icon": "kanban",
+      "label": { "call": "t", "args": { "key": "assistant.actions.openPipeline" } },
+      "to": { "page": "pipeline" }
+    }
+  ]
+}

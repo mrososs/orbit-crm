@@ -252,7 +252,7 @@ export class SettingsPage implements OnInit {
     { id: 'dark', icon: 'moon' },
     { id: 'system', icon: 'monitor' },
   ];
-  protected readonly stack = ['Angular 21', 'TypeScript', 'Signals', 'NgRx SignalStore', 'Tailwind CSS 4', 'Angular CDK', 'Apache ECharts', 'ngx-translate', 'Lucide'];
+  protected readonly stack = ['Angular 21', 'TypeScript', 'Signals', 'NgRx SignalStore', 'Tailwind CSS 4', 'Angular CDK', 'Apache ECharts', 'ngx-translate', 'Lucide', 'AG-UI', 'A2UI', 'Zod'];
 
   protected readonly user = computed(() => this.team.entityMap()[CURRENT_USER_ID]);
   protected readonly knobClass = computed(() => {

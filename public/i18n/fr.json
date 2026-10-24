@@ -694,7 +694,8 @@
     "duplicateEmail": "Un contact utilise déjà cette adresse e-mail",
     "duplicateCompany": "Une entreprise porte déjà ce nom",
     "number": "Saisissez un nombre",
-    "amount": "Saisissez un montant valide, par ex. 12500"
+    "amount": "Saisissez un montant valide, par ex. 12500",
+    "subjectLength": "Saisissez entre 3 et 120 caractères"
   },
   "errors": {
     "generic": "Une erreur est survenue. Veuillez réessayer.",
@@ -801,6 +802,221 @@
     "validation": {
       "future": "Choisissez aujourd’hui ou une date ultérieure",
       "terms": "Veuillez confirmer pour continuer"
+    }
+  },
+  "assistant": {
+    "title": "Assistant de démo interactif",
+    "subtitle": "Démo scénarisée · sans modèle d’IA · s’exécute dans votre navigateur",
+    "button": "Assistant",
+    "open": "Ouvrir l’assistant de démo",
+    "tooltip": "Assistant de démo interactif (scénarisé, sans modèle d’IA)",
+    "close": "Fermer l’assistant",
+    "reset": "Nouvelle conversation",
+    "loading": "Chargement de l’assistant de démo…",
+    "conversation": "Conversation",
+    "toolsUsed": "Outils CRM utilisés",
+    "cancelled": "Réponse interrompue.",
+    "tabs": {
+      "chat": "Discussion",
+      "events": "Événements AG-UI"
+    },
+    "welcome": {
+      "title": "Posez une question sur cet espace",
+      "text": "Je réponds à un ensemble défini de questions CRM avec les données réelles de cet espace de démo — essayez une suggestion ci-dessous.",
+      "disclaimer": "Agent de démo à base de règles — pas un modèle d’IA"
+    },
+    "suggestions": {
+      "title": "Essayez",
+      "salesOverview": "Montre-moi l’aperçu des ventes",
+      "topDeals": "Montre mes plus grosses affaires ouvertes",
+      "overdueTasks": "Quelles tâches sont en retard ?",
+      "createFollowUp": "Crée une tâche de relance",
+      "dealsFilter": "Affaires par responsable",
+      "moveDealStage": "Changer l’étape d’une affaire"
+    },
+    "composer": {
+      "label": "Écrire à l’assistant de démo",
+      "placeholder": "Posez une question sur les ventes, affaires ou tâches…",
+      "send": "Envoyer le message",
+      "stop": "Arrêter la réponse",
+      "hint": "Entrée pour envoyer · Maj+Entrée pour aller à la ligne"
+    },
+    "steps": {
+      "thinking": "Je m’en occupe…",
+      "query_crm": "Interrogation des données CRM…",
+      "render_surface": "Construction de l’interface…",
+      "validate_input": "Vérification de votre saisie…",
+      "execute_command": "Mise à jour du CRM…",
+      "connecting": "Connexion à l’agent de démo…"
+    },
+    "overview": {
+      "intro": "Voici l’aperçu des ventes, calculé comme sur le tableau de bord.",
+      "period": "{{start}} – {{end}} · toute l’équipe",
+      "pipelineTitle": "Pipeline ouvert par étape",
+      "pipelineSubtitle": {
+        "one": "{{count}} affaire ouverte",
+        "other": "{{count}} affaires ouvertes"
+      },
+      "overdueHint": {
+        "one": "{{count}} en retard",
+        "other": "{{count}} en retard"
+      },
+      "outro": "Rien n’est en retard. Demandez-moi ensuite vos plus grosses affaires.",
+      "outroOverdue": {
+        "one": "Attention : {{count}} relance est en retard.",
+        "other": "Attention : {{count}} relances sont en retard."
+      }
+    },
+    "deals": {
+      "introMine": "Voici vos plus grosses affaires ouvertes, par montant.",
+      "introTeam": "Voici les plus grosses affaires ouvertes de l’équipe, par montant.",
+      "countMine": "Vos affaires ouvertes",
+      "countTeam": "Affaires ouvertes de l’équipe",
+      "showTeam": "Afficher toute l’équipe",
+      "showMine": "N’afficher que les miennes",
+      "moveStage": "Changer d’étape",
+      "empty": "Aucune affaire ouverte.",
+      "none": "Aucune affaire ouverte à afficher.",
+      "outro": {
+        "one": "{{count}} affaire ouverte au total. Utilisez « Changer d’étape » pour la mettre à jour.",
+        "other": "{{count}} affaires ouvertes au total. Utilisez « Changer d’étape » pour en mettre une à jour."
+      }
+    },
+    "overdue": {
+      "intro": "Je vérifie les relances en retard.",
+      "summary": {
+        "one": "{{count}} tâche en retard",
+        "other": "{{count}} tâches en retard"
+      },
+      "empty": "Rien n’est en retard. Bravo !",
+      "none": "Vous êtes à jour — aucune tâche en retard.",
+      "outro": {
+        "one": "Voici la tâche en retard.",
+        "other": "Voici les {{count}} tâches en retard, de la plus ancienne à la plus récente."
+      }
+    },
+    "followUp": {
+      "intro": "Renseignez les détails et je créerai la tâche avec les mêmes règles que la page Tâches.",
+      "title": "Nouvelle tâche de relance",
+      "subtitle": "Liée à un contact ou à une affaire",
+      "submit": "Créer la tâche",
+      "linkHint": "Liez un contact, une affaire, ou les deux.",
+      "invalid": {
+        "one": "{{count}} champ est à corriger avant que je puisse créer la tâche.",
+        "other": "{{count}} champs sont à corriger avant que je puisse créer la tâche."
+      },
+      "done": "C’est fait — « {{subject}} » figure dans la page Tâches.",
+      "createdTitle": "Relance créée",
+      "createdMessage": "Échéance : {{date}}",
+      "cancelled": "Pas de souci — rien n’a été créé."
+    },
+    "fields": {
+      "subject": "Objet",
+      "subjectPlaceholder": "ex. Appel sur le renouvellement",
+      "dueDate": "Échéance",
+      "dueTime": "Heure",
+      "contact": "Contact",
+      "searchContacts": "Rechercher un contact…",
+      "deal": "Affaire",
+      "searchDeals": "Rechercher une affaire ouverte…",
+      "priority": "Priorité",
+      "owner": "Responsable",
+      "stage": "Étape",
+      "targetStage": "Nouvelle étape",
+      "chooseStage": "Choisissez une étape"
+    },
+    "filters": {
+      "intro": "Choisissez un responsable et une étape — la liste se met à jour à chaque changement.",
+      "outro": "Cette liste est en lecture seule ; elle lit les mêmes affaires que le pipeline.",
+      "matching": "Affaires correspondantes",
+      "value": "Montant total",
+      "empty": "Aucune affaire ne correspond à ces filtres.",
+      "allOwners": "Tous les responsables",
+      "openStages": "Toutes les étapes ouvertes"
+    },
+    "move": {
+      "intro": "Choisissez une affaire et sa nouvelle étape. Je vous demanderai de confirmer avant tout changement.",
+      "title": "Changer l’étape d’une affaire",
+      "subtitle": "Les changements suivent les règles du pipeline",
+      "review": "Vérifier le changement",
+      "invalid": "Veuillez vérifier les champs signalés.",
+      "reviewText": "Veuillez confirmer ce changement.",
+      "confirmTitle": "Confirmer le changement d’étape",
+      "confirmMessage": "Cela met à jour le pipeline, les chiffres du tableau de bord et l’historique de l’affaire. Vous pourrez annuler ensuite.",
+      "confirm": "Confirmer",
+      "dealLabel": "Affaire",
+      "fromLabel": "De",
+      "toLabel": "Vers",
+      "valueLabel": "Montant",
+      "doneTitle": "Étape mise à jour",
+      "undoneTitle": "Changement annulé",
+      "doneText": "« {{deal}} » est maintenant à l’étape {{stage}}.",
+      "undoneText": "Annulé — « {{deal}} » est revenue à l’étape {{stage}}.",
+      "undoUnavailable": "Ce changement ne peut plus être annulé ici.",
+      "cancelled": "D’accord — l’affaire n’a pas été modifiée."
+    },
+    "help": {
+      "text": "Je suis un assistant de démo scénarisé. Voici ce que je peux faire avec cet espace :",
+      "intro": "Chaque option lance une vraie requête ou une vraie mise à jour sur les données de démo."
+    },
+    "fallback": {
+      "text": "Je suis une démo à base de règles : je n’ai pas reconnu cette demande. Je peux vous aider pour ceci :"
+    },
+    "malformed": {
+      "intro": "Envoi d’une interface volontairement invalide pour tester la validation côté client…",
+      "outro": "Le client doit la refuser avant affichage — ouvrez l’onglet Événements AG-UI pour voir pourquoi."
+    },
+    "records": {
+      "due": "Échéance {{date}}",
+      "closes": "Clôture {{date}}"
+    },
+    "form": {
+      "submitted": "Envoyé",
+      "cancelled": "Annulé",
+      "confirmed": "Confirmé"
+    },
+    "validation": {
+      "pastDate": "Choisissez aujourd’hui ou une date ultérieure",
+      "unknownRecord": "Choisissez une option dans la liste",
+      "linkRecord": "Liez un contact ou une affaire",
+      "chooseDeal": "Choisissez une affaire ouverte",
+      "chooseStage": "Choisissez une étape",
+      "sameStage": "L’affaire est déjà à cette étape"
+    },
+    "errors": {
+      "staleSurface": "Cette carte appartient à une conversation précédente ; je ne peux pas y donner suite.",
+      "invalidAction": "Cette demande ne correspond à rien de ce que j’ai préparé ; je l’ai ignorée.",
+      "invalidData": "Cette carte a reçu des données qu’elle ne peut pas afficher.",
+      "noChartData": "Aucune affaire ouverte à représenter",
+      "rejectedTitle": "Réponse bloquée",
+      "rejectedText": "Elle contenait des éléments d’interface hors du catalogue de composants Orbit : rien n’a été affiché ni exécuté.",
+      "rejectedDetails": "Détails de la validation",
+      "blockedAction": "Une action de l’interface a été bloquée par la validation.",
+      "runFailed": "L’agent de démo n’a pas pu traiter cette demande."
+    },
+    "inspector": {
+      "intro": "Chaque exécution diffuse des événements AG-UI depuis l’agent local. Les interfaces A2UI transitent dans les événements ACTIVITY_SNAPSHOT et ACTIVITY_DELTA.",
+      "empty": "Aucune exécution pour l’instant — envoyez un message pour voir le flux d’événements.",
+      "status": {
+        "running": "En cours",
+        "success": "Terminée",
+        "cancelled": "Annulée",
+        "error": "Erreur"
+      },
+      "trigger": {
+        "message": "Message saisi",
+        "suggestion": "Suggestion",
+        "action": "Action : {{name}}"
+      },
+      "invalid": "invalide",
+      "state": "État de l’agent",
+      "stateHint": "Reconstruit côté client à partir des événements STATE_SNAPSHOT et STATE_DELTA.",
+      "latency": "La latence réseau est simulée, comme avec un agent distant : environ 0,5–1 s avant le premier événement et 0,35–0,8 s par appel d’outil CRM."
+    },
+    "actions": {
+      "openDashboard": "Ouvrir le tableau de bord",
+      "openPipeline": "Ouvrir le pipeline",
+      "openTasks": "Ouvrir les tâches"
     }
   }
 }

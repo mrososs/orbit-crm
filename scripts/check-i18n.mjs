@@ -4,7 +4,8 @@
  *  1. Key parity — en, ar and fr expose the same keys.
  *  2. Plural entries — every plural object has `other` (en/fr also `one`).
  *  3. Placeholder parity — {{params}} match the English source.
- *  4. Usage — every literal key referenced in src/ exists; unused keys are reported.
+ *  4. Usage — every literal key referenced in src/ (TypeScript and JSON fixtures such as the
+ *     assistant's A2UI scenarios) exists; unused keys are reported.
  * Exits with code 1 on errors (warnings never fail the run).
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -31,6 +32,8 @@ const DYNAMIC_PREFIXES = [
   'charts.bands.',
   'showcase.flags.',
   'showcase.plans.',
+  'assistant.steps.',
+  'assistant.inspector.status.',
 ];
 
 const dicts = Object.fromEntries(
@@ -94,7 +97,7 @@ const files = [];
   for (const name of readdirSync(dir)) {
     const path = join(dir, name);
     if (statSync(path).isDirectory()) walk(path);
-    else if (path.endsWith('.ts') && !path.endsWith('.spec.ts')) files.push(path);
+    else if ((path.endsWith('.ts') && !path.endsWith('.spec.ts')) || path.endsWith('.json')) files.push(path);
   }
 })(join(root, 'src/app'));
 

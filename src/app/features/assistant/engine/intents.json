@@ -1,0 +1,94 @@
+[
+  {
+    "id": "salesOverview",
+    "priority": 5,
+    "phrases": {
+      "en": ["show me the sales overview", "sales overview", "how are sales doing", "sales summary", "revenue overview", "give me a sales summary", "dashboard summary", "how is the business doing"],
+      "fr": ["montre-moi l'aperçu des ventes", "aperçu des ventes", "résumé des ventes", "comment vont les ventes", "synthèse commerciale"],
+      "ar": ["اعرض نظرة عامة على المبيعات", "نظرة عامة على المبيعات", "ملخص المبيعات", "كيف حال المبيعات", "أداء المبيعات"]
+    },
+    "keywords": [["overview", "summary", "performance", "kpi", "sales", "revenue", "aperçu", "resume", "synthese", "ventes", "chiffre d'affaires", "نظره عامه", "ملخص", "المبيعات", "الايرادات", "اداء"]]
+  },
+  {
+    "id": "topDeals",
+    "priority": 6,
+    "phrases": {
+      "en": ["show my biggest open deals", "show the biggest open deals", "biggest open deals", "top deals", "largest deals", "most important deals", "what are my biggest deals"],
+      "fr": ["montre mes plus grosses affaires ouvertes", "plus grosses affaires", "principales affaires", "meilleures affaires", "affaires les plus importantes"],
+      "ar": ["اعرض أكبر صفقاتي المفتوحة", "أكبر الصفقات المفتوحة", "أكبر الصفقات", "أهم الصفقات", "أكبر صفقاتي"]
+    },
+    "keywords": [
+      ["deal", "opportunit", "affaire", "صفق"],
+      ["biggest", "largest", "top", "important", "big", "high value", "grosse", "grande", "principal", "meilleur", "importante", "اكبر", "اهم", "كبري", "الكبيره"]
+    ]
+  },
+  {
+    "id": "overdueTasks",
+    "priority": 6,
+    "phrases": {
+      "en": ["what tasks are overdue", "overdue tasks", "show overdue tasks", "what's overdue", "late follow-ups", "which follow-ups are late"],
+      "fr": ["quelles tâches sont en retard", "tâches en retard", "relances en retard", "qu'est-ce qui est en retard"],
+      "ar": ["ما المهام المتأخرة", "المهام المتأخرة", "اعرض المهام المتأخرة", "المتابعات المتأخرة"]
+    },
+    "keywords": [["overdue", "late", "past due", "missed", "en retard", "retard", "متاخر", "فائت"]]
+  },
+  {
+    "id": "createFollowUp",
+    "priority": 7,
+    "phrases": {
+      "en": ["create a follow-up task", "create a follow up task", "new follow-up", "schedule a follow-up", "add a task", "create a task", "remind me to follow up"],
+      "fr": ["crée une tâche de relance", "créer une relance", "nouvelle relance", "planifier une relance", "ajouter une tâche"],
+      "ar": ["أنشئ مهمة متابعة", "إنشاء مهمة متابعة", "مهمة متابعة جديدة", "جدولة متابعة", "أضف مهمة"]
+    },
+    "keywords": [
+      ["create", "add", "new", "schedule", "log", "remind", "cree", "creer", "ajoute", "nouvelle", "planifi", "انشئ", "انشاء", "اضف", "جديد", "جدول", "ذكرني"],
+      ["follow", "task", "reminder", "call", "relance", "tache", "rappel", "suivi", "متابع", "مهم", "تذكير"]
+    ]
+  },
+  {
+    "id": "dealsFilter",
+    "priority": 4,
+    "phrases": {
+      "en": ["show deals by owner", "filter deals by owner", "filter deals by stage", "deals by stage", "deals by owner", "filter the pipeline"],
+      "fr": ["affaires par responsable", "filtrer les affaires par responsable", "filtrer les affaires par étape", "affaires par étape", "filtrer le pipeline"],
+      "ar": ["اعرض الصفقات حسب المسؤول", "صفّ الصفقات حسب المسؤول", "صفّ الصفقات حسب المرحلة", "الصفقات حسب المرحلة", "تصفية مسار المبيعات"]
+    },
+    "keywords": [
+      ["deal", "pipeline", "opportunit", "affaire", "صفق", "مسار"],
+      ["owner", "stage", "filter", "by ", "per ", "responsable", "etape", "filtr", "par ", "مسؤول", "مرحل", "تصفيه", "صف ", "حسب"]
+    ]
+  },
+  {
+    "id": "moveDealStage",
+    "priority": 7,
+    "phrases": {
+      "en": ["update a deal stage", "move a deal", "move a deal to another stage", "change a deal stage", "advance a deal"],
+      "fr": ["changer l'étape d'une affaire", "déplacer une affaire", "faire avancer une affaire", "mettre à jour l'étape d'une affaire"],
+      "ar": ["حدّث مرحلة صفقة", "انقل صفقة", "غيّر مرحلة صفقة", "قدّم صفقة إلى المرحلة التالية"]
+    },
+    "keywords": [
+      ["move", "advance", "change", "update", "deplac", "avancer", "changer", "mettre a jour", "انقل", "نقل", "حرك", "غير", "حدث", "قدم"],
+      ["stage", "deal", "etape", "affaire", "مرحل", "صفق"]
+    ]
+  },
+  {
+    "id": "help",
+    "priority": 1,
+    "phrases": {
+      "en": ["help", "what can you do", "what can i ask", "show me what you can do"],
+      "fr": ["aide", "que peux-tu faire", "que puis-je demander"],
+      "ar": ["مساعدة", "ماذا يمكنك أن تفعل", "ماذا يمكنني أن أسأل"]
+    },
+    "keywords": [["help", "what can you", "what can i", "aide", "que peux", "que puis", "مساعد", "ماذا يمكن"]]
+  },
+  {
+    "id": "malformedDemo",
+    "priority": 8,
+    "phrases": {
+      "en": ["simulate a malformed payload", "send an invalid ui payload", "test the validation layer"],
+      "fr": ["simuler une charge utile invalide", "envoyer une interface invalide", "tester la validation"],
+      "ar": ["محاكاة حمولة غير صالحة", "أرسل واجهة غير صالحة", "اختبر طبقة التحقق"]
+    },
+    "keywords": [["malformed", "invalid payload", "charge utile invalide", "حموله غير صالحه"]]
+  }
+]

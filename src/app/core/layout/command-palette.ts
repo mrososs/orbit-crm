@@ -8,6 +8,7 @@ import { CompaniesStore, ContactsStore, DealsStore } from '../../state/entity-st
 import { LanguageService } from '../i18n/language.service';
 import { formatCurrency } from '../i18n/locale.utils';
 import { fullName } from '../models';
+import { AssistantLauncher } from './assistant-launcher.service';
 import { DEMO_NAV, INSIGHT_NAV, PRIMARY_NAV, SETTINGS_NAV } from './nav-items';
 import { QuickCreateService } from './quick-create.service';
 
@@ -101,6 +102,7 @@ export class CommandPalette {
   private readonly contacts = inject(ContactsStore);
   private readonly companies = inject(CompaniesStore);
   private readonly create = inject(QuickCreateService);
+  private readonly assistant = inject(AssistantLauncher);
   private readonly input = viewChild.required<ElementRef<HTMLInputElement>>('input');
 
   protected readonly query = signal('');
@@ -122,6 +124,7 @@ export class CommandPalette {
       { id: 'new-contact', label: t('quickCreate.contact'), icon: 'user-plus', run: () => this.after(() => this.create.contact()) },
       { id: 'new-company', label: t('quickCreate.company'), icon: 'building', run: () => this.after(() => this.create.company()) },
       { id: 'new-activity', label: t('quickCreate.activity'), icon: 'calendar-check', run: () => this.after(() => this.create.activity()) },
+      { id: 'assistant', label: t('assistant.open'), icon: 'bot', run: () => this.after(async () => this.assistant.open()) },
     ]
       .map((a) => ({ ...a, group: 'actions' as const }))
       .filter((a) => match(a.label));
