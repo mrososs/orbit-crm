@@ -8,7 +8,7 @@ import { CompaniesStore, ContactsStore, DealsStore } from '../../state/entity-st
 import { LanguageService } from '../i18n/language.service';
 import { formatCurrency } from '../i18n/locale.utils';
 import { fullName } from '../models';
-import { INSIGHT_NAV, PRIMARY_NAV, SETTINGS_NAV } from './nav-items';
+import { DEMO_NAV, INSIGHT_NAV, PRIMARY_NAV, SETTINGS_NAV } from './nav-items';
 import { QuickCreateService } from './quick-create.service';
 
 interface PaletteItem {
@@ -113,7 +113,7 @@ export class CommandPalette {
     const locale = this.language.locale();
     const go = (path: string) => () => this.navigate(path);
 
-    const pages: PaletteItem[] = [...PRIMARY_NAV, ...INSIGHT_NAV, SETTINGS_NAV]
+    const pages: PaletteItem[] = [...PRIMARY_NAV, ...INSIGHT_NAV, SETTINGS_NAV, ...DEMO_NAV]
       .map((n) => ({ id: `page-${n.path}`, group: 'pages' as const, label: t(n.label), icon: n.icon, run: go(n.path) }))
       .filter((p) => match(p.label));
 

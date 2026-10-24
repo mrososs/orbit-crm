@@ -22,11 +22,11 @@ import {
   teamRevenueChart,
 } from './reports-charts';
 import { ReportsStore } from './reports.store';
-import { SelectValue } from '../../shared/directives/select-value';
+import { Select } from '../../shared/ui/controls/select';
 
 @Component({
   selector: 'app-reports-page',
-  imports: [SelectValue, TranslatePipe, PluralPipe, RangeFilter, Chart, StatCard, Avatar, Skeleton, MoneyPipe, NumberPipe, PercentPipe],
+  imports: [Select, TranslatePipe, PluralPipe, RangeFilter, Chart, StatCard, Avatar, Skeleton, MoneyPipe, NumberPipe, PercentPipe],
   template: `
     <div class="page animate-rise-in">
       <header class="page-header">
@@ -36,20 +36,8 @@ import { SelectValue } from '../../shared/directives/select-value';
         </div>
         <div class="flex flex-wrap items-center gap-2">
           <ui-range-filter [value]="store.selection()" (changed)="store.setRange($event)" />
-          <label class="sr-only" for="reports-owner">{{ 'filters.teamMember' | translate }}</label>
-          <select id="reports-owner" class="control control-sm w-auto min-w-40" [uiValue]="store.ownerId()" (change)="store.setOwner($any($event.target).value)">
-            <option value="all">{{ 'filters.allTeam' | translate }}</option>
-            @for (m of team.members(); track m.id) {
-              <option [value]="m.id">{{ name(m) }}</option>
-            }
-          </select>
-          <label class="sr-only" for="reports-source">{{ 'filters.source' | translate }}</label>
-          <select id="reports-source" class="control control-sm w-auto min-w-36" [uiValue]="store.source()" (change)="setSource($event)" data-testid="reports-source">
-            <option value="all">{{ 'reports.allSources' | translate }}</option>
-            @for (s of sources; track s) {
-              <option [value]="s">{{ 'enums.source.' + s | translate }}</option>
-            }
-          </select>
+          <ui-select inputId="reports-owner" size="sm" class="min-w-40" testId="reports-owner" [ariaLabel]="'filters.teamMember' | translate" [options]="ownerSelectOptions()" [value]="store.ownerId()" (valueChange)="store.setOwner($event)" />
+          <ui-select inputId="reports-source" size="sm" class="min-w-36" testId="reports-source" [ariaLabel]="'filters.source' | translate" [options]="sourceSelectOptions()" [value]="store.source()" (valueChange)="setSource($event)" />
         </div>
       </header>
 
@@ -219,6 +207,14 @@ export class ReportsPage {
 
   protected readonly name = fullName;
   protected readonly sources = LEAD_SOURCES;
+  protected readonly ownerSelectOptions = computed(() => [
+    { value: 'all', label: this.language.t('filters.allTeam') },
+    ...this.team.members().map((m) => ({ value: m.id, label: fullName(m) })),
+  ]);
+  protected readonly sourceSelectOptions = computed(() => [
+    { value: 'all', label: this.language.t('reports.allSources') },
+    ...this.sources.map((s) => ({ value: s, label: this.language.t(`enums.source.${s}`) })),
+  ]);
   private readonly fmt = computed(() => createFormatters(this.language.locale()));
   private readonly t = (key: string, params?: Record<string, unknown>) => this.language.t(key, params);
 
@@ -329,7 +325,7 @@ export class ReportsPage {
     );
   });
 
-  protected setSource(event: Event): void {
-    this.store.setSource((event.target as HTMLSelectElement).value as LeadSource | 'all');
+  protected setSource(value: string): void {
+    this.store.setSource(value as LeadSource | 'all');
   }
 }

@@ -27,6 +27,16 @@ export function parseNumber(text: string | null): number {
   return Number((text ?? '').replace(/[^\d.-]/g, ''));
 }
 
+/**
+ * Picks an option in an Orbit dropdown (`ui-select`, a styled listbox): opens it
+ * and clicks the option with this exact accessible name.
+ */
+export async function pickOption(page: Page, testId: string, label: string): Promise<void> {
+  await page.getByTestId(testId).click();
+  await page.getByTestId(`${testId}-panel`).getByRole('option', { name: label, exact: true }).click();
+  await expect(page.getByTestId(`${testId}-panel`)).toHaveCount(0);
+}
+
 export async function switchLanguage(page: Page, code: 'en' | 'ar' | 'fr'): Promise<void> {
   await page.getByTestId('language-switcher').click();
   await page.getByTestId(`language-option-${code}`).click();

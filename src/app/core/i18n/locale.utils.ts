@@ -91,12 +91,13 @@ export function formatSignedPercent(ratio: number, locale: string, decimals = 0)
   ).format(ratio);
 }
 
-export type DateStyle = 'short' | 'medium' | 'long' | 'monthYear' | 'month' | 'dayMonth' | 'weekday' | 'time' | 'dateTime';
+export type DateStyle = 'short' | 'medium' | 'long' | 'full' | 'monthYear' | 'month' | 'dayMonth' | 'weekday' | 'time' | 'dateTime';
 
 const DATE_OPTIONS: Record<DateStyle, Intl.DateTimeFormatOptions> = {
   short: { year: 'numeric', month: 'short', day: 'numeric' },
   medium: { year: 'numeric', month: 'short', day: 'numeric' },
   long: { year: 'numeric', month: 'long', day: 'numeric' },
+  full: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' },
   monthYear: { year: 'numeric', month: 'short' },
   month: { month: 'short' },
   dayMonth: { month: 'short', day: 'numeric' },

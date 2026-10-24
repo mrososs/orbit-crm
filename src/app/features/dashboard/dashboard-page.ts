@@ -15,11 +15,11 @@ import { monthlyWonChart, pipelineChart, revenueChart, sourcesChart } from './da
 import { DashboardKpis } from './dashboard-kpis';
 import { DashboardStore } from './dashboard.store';
 import { TeamLeaderboard } from './team-leaderboard';
-import { SelectValue } from '../../shared/directives/select-value';
+import { Select } from '../../shared/ui/controls/select';
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [SelectValue, 
+  imports: [Select, 
     TranslatePipe,
     RangeFilter,
     DashboardKpis,
@@ -40,19 +40,7 @@ import { SelectValue } from '../../shared/directives/select-value';
         </div>
         <div class="flex flex-wrap items-center gap-2">
           <ui-range-filter [value]="store.selection()" (changed)="store.setRange($event)" />
-          <label class="sr-only" for="dashboard-owner">{{ 'filters.teamMember' | translate }}</label>
-          <select
-            id="dashboard-owner"
-            class="control control-sm w-auto min-w-40"
-            [uiValue]="store.ownerId()"
-            (change)="setOwner($event)"
-            data-testid="dashboard-owner"
-          >
-            <option value="all">{{ 'filters.allTeam' | translate }}</option>
-            @for (m of team.members(); track m.id) {
-              <option [value]="m.id">{{ name(m) }}</option>
-            }
-          </select>
+          <ui-select inputId="dashboard-owner" size="sm" class="min-w-40" testId="dashboard-owner" [ariaLabel]="'filters.teamMember' | translate" [options]="ownerSelectOptions()" [value]="store.ownerId()" (valueChange)="store.setOwner($event)" />
         </div>
       </header>
 
@@ -234,6 +222,10 @@ export class DashboardPage {
   private readonly language = inject(LanguageService);
 
   protected readonly name = fullName;
+  protected readonly ownerSelectOptions = computed(() => [
+    { value: 'all', label: this.language.t('filters.allTeam') },
+    ...this.team.members().map((m) => ({ value: m.id, label: fullName(m) })),
+  ]);
   protected readonly fmt = computed(() => createFormatters(this.language.locale()));
 
   protected readonly firstName = computed(() => this.team.entityMap()[CURRENT_USER_ID]?.firstName ?? '');
@@ -308,7 +300,4 @@ export class DashboardPage {
     );
   });
 
-  protected setOwner(event: Event): void {
-    this.store.setOwner((event.target as HTMLSelectElement).value);
-  }
 }

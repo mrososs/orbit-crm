@@ -61,6 +61,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/settings/settings-page').then((m) => m.SettingsPage),
       },
       {
+        path: 'showcase',
+        title: 'showcase.title',
+        loadComponent: () => import('./features/showcase/form-showcase-page').then((m) => m.FormShowcasePage),
+      },
+      {
         path: '**',
         title: 'notFound.title',
         loadComponent: () => import('./features/not-found/not-found-page').then((m) => m.NotFoundPage),

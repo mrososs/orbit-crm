@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { email, form, FormField, required, submit, validate } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -11,12 +11,14 @@ import {
   LEAD_SOURCES,
   LeadSource,
 } from '../../core/models';
+import { LanguageService } from '../../core/i18n/language.service';
 import { CURRENT_USER_ID } from '../../core/services/session';
 import { ToastService } from '../../core/services/toast.service';
-import { FieldAria } from '../../shared/directives/field-aria';
 import { Button } from '../../shared/ui/button';
 import { DialogFrame } from '../../shared/ui/dialog/dialog-frame';
-import { FormFieldShell } from '../../shared/ui/form-field';
+import { Select } from '../../shared/ui/controls/select';
+import { TextInput } from '../../shared/ui/controls/text-input';
+import { Textarea } from '../../shared/ui/controls/textarea';
 import { ContactDraft, CrmService } from '../../state/crm.service';
 import { CompaniesStore, ContactsStore, TeamStore } from '../../state/entity-stores';
 
@@ -42,7 +44,7 @@ export const PHONE_PATTERN = /^\+?[\d\s().-]{7,20}$/;
 
 @Component({
   selector: 'app-contact-form-dialog',
-  imports: [DialogFrame, FormField, FieldAria, FormFieldShell, Button, TranslatePipe],
+  imports: [DialogFrame, FormField, TextInput, Select, Textarea, Button, TranslatePipe],
   template: `
     <form (submit)="save($event)" novalidate class="contents">
       <ui-dialog-frame
@@ -51,53 +53,16 @@ export const PHONE_PATTERN = /^\+?[\d\s().-]{7,20}$/;
         icon="user-plus"
       >
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <ui-form-field for="contact-first" [label]="'contacts.fields.firstName' | translate" [field]="contactForm.firstName">
-            <input id="contact-first" class="control" autocomplete="off" [formField]="contactForm.firstName" data-testid="contact-first-name" />
-          </ui-form-field>
-          <ui-form-field for="contact-last" [label]="'contacts.fields.lastName' | translate" [field]="contactForm.lastName">
-            <input id="contact-last" class="control" autocomplete="off" [formField]="contactForm.lastName" data-testid="contact-last-name" />
-          </ui-form-field>
-          <ui-form-field for="contact-email" [label]="'contacts.fields.email' | translate" [field]="contactForm.email">
-            <input id="contact-email" type="email" dir="ltr" class="control" autocomplete="off" [formField]="contactForm.email" data-testid="contact-email" />
-          </ui-form-field>
-          <ui-form-field for="contact-phone" [label]="'contacts.fields.phone' | translate" [field]="contactForm.phone" [optional]="'common.optional' | translate">
-            <input id="contact-phone" type="tel" dir="ltr" class="control" autocomplete="off" [formField]="contactForm.phone" data-testid="contact-phone" />
-          </ui-form-field>
-          <ui-form-field for="contact-title" [label]="'contacts.fields.jobTitle' | translate" [optional]="'common.optional' | translate">
-            <input id="contact-title" class="control" [formField]="contactForm.jobTitle" [placeholder]="'contacts.fields.jobTitlePlaceholder' | translate" data-testid="contact-title" />
-          </ui-form-field>
-          <ui-form-field for="contact-company" [label]="'contacts.fields.company' | translate">
-            <select id="contact-company" class="control" [formField]="contactForm.companyId" data-testid="contact-company">
-              <option value="">{{ 'contacts.fields.noCompany' | translate }}</option>
-              @for (c of companies.sorted(); track c.id) {
-                <option [value]="c.id">{{ c.name }}</option>
-              }
-            </select>
-          </ui-form-field>
-          <ui-form-field for="contact-status" [label]="'contacts.fields.status' | translate">
-            <select id="contact-status" class="control" [formField]="contactForm.status" data-testid="contact-status">
-              @for (s of statuses; track s) {
-                <option [value]="s">{{ 'enums.contactStatus.' + s | translate }}</option>
-              }
-            </select>
-          </ui-form-field>
-          <ui-form-field for="contact-source" [label]="'contacts.fields.source' | translate">
-            <select id="contact-source" class="control" [formField]="contactForm.source">
-              @for (s of sources; track s) {
-                <option [value]="s">{{ 'enums.source.' + s | translate }}</option>
-              }
-            </select>
-          </ui-form-field>
-          <ui-form-field class="sm:col-span-2" for="contact-owner" [label]="'contacts.fields.owner' | translate" [field]="contactForm.ownerId">
-            <select id="contact-owner" class="control" [formField]="contactForm.ownerId">
-              @for (m of team.members(); track m.id) {
-                <option [value]="m.id">{{ name(m) }}</option>
-              }
-            </select>
-          </ui-form-field>
-          <ui-form-field class="sm:col-span-2" for="contact-notes" [label]="'contacts.fields.notes' | translate" [optional]="'common.optional' | translate">
-            <textarea id="contact-notes" rows="3" class="control" [formField]="contactForm.notes" [placeholder]="'contacts.fields.notesPlaceholder' | translate"></textarea>
-          </ui-form-field>
+          <ui-text-input inputId="contact-first" testId="contact-first-name" autocomplete="off" [label]="'contacts.fields.firstName' | translate" [formField]="contactForm.firstName" />
+          <ui-text-input inputId="contact-last" testId="contact-last-name" autocomplete="off" [label]="'contacts.fields.lastName' | translate" [formField]="contactForm.lastName" />
+          <ui-text-input inputId="contact-email" testId="contact-email" type="email" autocomplete="off" [label]="'contacts.fields.email' | translate" [formField]="contactForm.email" />
+          <ui-text-input inputId="contact-phone" testId="contact-phone" type="tel" autocomplete="off" optional [label]="'contacts.fields.phone' | translate" [formField]="contactForm.phone" />
+          <ui-text-input inputId="contact-title" testId="contact-title" optional [label]="'contacts.fields.jobTitle' | translate" [placeholder]="'contacts.fields.jobTitlePlaceholder' | translate" [formField]="contactForm.jobTitle" />
+          <ui-select inputId="contact-company" testId="contact-company" [label]="'contacts.fields.company' | translate" [placeholder]="'contacts.fields.noCompany' | translate" [options]="companyOptions()" [formField]="contactForm.companyId" />
+          <ui-select inputId="contact-status" testId="contact-status" [label]="'contacts.fields.status' | translate" [options]="statusOptions()" [formField]="contactForm.status" />
+          <ui-select inputId="contact-source" [label]="'contacts.fields.source' | translate" [options]="sourceOptions()" [formField]="contactForm.source" />
+          <ui-select class="sm:col-span-2" inputId="contact-owner" [label]="'contacts.fields.owner' | translate" [options]="ownerOptions()" [formField]="contactForm.ownerId" />
+          <ui-textarea class="sm:col-span-2" inputId="contact-notes" optional [label]="'contacts.fields.notes' | translate" [placeholder]="'contacts.fields.notesPlaceholder' | translate" [formField]="contactForm.notes" />
         </div>
 
         @if (failed()) {
@@ -122,13 +87,20 @@ export class ContactFormDialog {
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
   private readonly contacts = inject(ContactsStore);
-  protected readonly companies = inject(CompaniesStore);
-  protected readonly team = inject(TeamStore);
+  private readonly companies = inject(CompaniesStore);
+  private readonly team = inject(TeamStore);
+  private readonly language = inject(LanguageService);
 
   protected readonly isEdit = !!this.data.contact;
-  protected readonly statuses = CONTACT_STATUSES;
-  protected readonly sources = LEAD_SOURCES;
-  protected readonly name = fullName;
+
+  protected readonly companyOptions = computed(() => this.companies.sorted().map((c) => ({ value: c.id, label: c.name })));
+  protected readonly statusOptions = computed(() =>
+    CONTACT_STATUSES.map((s) => ({ value: s, label: this.language.t(`enums.contactStatus.${s}`) })),
+  );
+  protected readonly sourceOptions = computed(() =>
+    LEAD_SOURCES.map((s) => ({ value: s, label: this.language.t(`enums.source.${s}`) })),
+  );
+  protected readonly ownerOptions = computed(() => this.team.members().map((m) => ({ value: m.id, label: fullName(m) })));
   protected readonly saving = signal(false);
   protected readonly failed = signal(false);
   /** Set while persisting so uniqueness checks ignore the record being saved. */

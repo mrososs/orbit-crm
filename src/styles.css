@@ -546,6 +546,65 @@
     @apply mt-1.5 text-xs text-fg-subtle;
   }
 
+  /* Native checkbox / switch, restyled with tokens (semantics and keyboard stay native) */
+  .ui-checkbox {
+    appearance: none;
+    @apply size-4 rounded border border-line-strong bg-surface shadow-xs;
+    transition:
+      background-color 140ms ease,
+      border-color 140ms ease;
+  }
+
+  .ui-checkbox:checked {
+    border-color: var(--primary);
+    background: var(--primary)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")
+      center / 0.75rem no-repeat;
+  }
+
+  .ui-switch {
+    appearance: none;
+    position: relative;
+    @apply h-5 w-9 rounded-full bg-line-strong;
+    transition: background-color 160ms ease;
+  }
+
+  .ui-switch::before {
+    content: "";
+    position: absolute;
+    top: 0.125rem;
+    inset-inline-start: 0.125rem;
+    @apply size-4 rounded-full bg-white shadow-sm;
+    transition: translate 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .ui-switch:checked {
+    background: var(--primary);
+  }
+
+  .ui-switch:checked::before {
+    translate: 1rem 0;
+  }
+
+  [dir="rtl"] .ui-switch:checked::before {
+    translate: -1rem 0;
+  }
+
+  .ui-checkbox:disabled,
+  .ui-switch:disabled {
+    cursor: not-allowed;
+  }
+
+  .ui-checkbox:focus-visible,
+  .ui-switch:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--ring);
+  }
+
+  .ui-checkbox[aria-invalid="true"] {
+    border-color: var(--danger);
+  }
+
   /* Tables */
   .data-table {
     @apply w-full border-separate border-spacing-0 text-sm;

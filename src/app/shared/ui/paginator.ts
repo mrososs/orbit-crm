@@ -1,29 +1,28 @@
 import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { TranslatePipe } from '@ngx-translate/core';
-import { SelectValue } from '../directives/select-value';
+import { Select } from './controls/select';
 
 @Component({
   selector: 'ui-paginator',
-  imports: [SelectValue, LucideDynamicIcon, TranslatePipe],
+  imports: [Select, LucideDynamicIcon, TranslatePipe],
   template: `
     <p class="text-[0.8125rem] text-fg-muted tabular" aria-live="polite">
       {{ 'table.showing' | translate: { from: from(), to: to(), total: total() } }}
     </p>
     <div class="flex items-center gap-3">
-      <label class="hidden items-center gap-2 text-[0.8125rem] text-fg-muted sm:flex">
-        {{ 'table.rowsPerPage' | translate }}
-        <select
-          class="control control-sm w-[4.5rem]"
-          [uiValue]="pageSize()"
-          (change)="setSize($event)"
-          data-testid="page-size"
-        >
-          @for (size of sizes(); track size) {
-            <option [value]="size">{{ size }}</option>
-          }
-        </select>
-      </label>
+      <div class="hidden items-center gap-2 text-[0.8125rem] text-fg-muted sm:flex">
+        <span aria-hidden="true">{{ 'table.rowsPerPage' | translate }}</span>
+        <ui-select
+          size="sm"
+          class="w-[4.75rem]"
+          testId="page-size"
+          [ariaLabel]="'table.rowsPerPage' | translate"
+          [options]="sizeOptions()"
+          [value]="'' + pageSize()"
+          (valueChange)="setSize($event)"
+        />
+      </div>
       <span class="text-[0.8125rem] text-fg-muted tabular">
         {{ 'table.pageOf' | translate: { page: page() + 1, pages: pages() } }}
       </span>
@@ -63,8 +62,10 @@ export class Paginator {
   protected readonly from = computed(() => (this.total() === 0 ? 0 : this.page() * this.pageSize() + 1));
   protected readonly to = computed(() => Math.min(this.total(), (this.page() + 1) * this.pageSize()));
 
-  protected setSize(event: Event): void {
-    this.pageSize.set(Number((event.target as HTMLSelectElement).value));
+  protected readonly sizeOptions = computed(() => this.sizes().map((size) => ({ value: String(size), label: String(size) })));
+
+  protected setSize(value: string): void {
+    this.pageSize.set(Number(value));
     this.page.set(0);
   }
 }

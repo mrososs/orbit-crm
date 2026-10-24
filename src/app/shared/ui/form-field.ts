@@ -14,16 +14,36 @@ const ERROR_KEYS: Record<string, string> = {
   pattern: 'validation.pattern',
 };
 
+/** The subset of a Signal Forms `ValidationError` the shell reads. */
+export interface ValidationLike {
+  readonly kind: string;
+  readonly message?: string;
+}
+
+/** Translates a validation error; `message` may itself be a translation key. */
+export function validationMessage(error: ValidationLike, t: LanguageService['t']): string {
+  const key = error.message ?? ERROR_KEYS[error.kind] ?? 'validation.invalid';
+  const extra = error as unknown as Record<string, unknown>;
+  return t(key, {
+    min: extra['min'],
+    max: extra['max'],
+    count: extra['minLength'] ?? extra['maxLength'],
+  });
+}
+
 /**
  * Label + control + hint/error wrapper for Signal Forms. Errors appear once the
  * field is touched (or after a submit attempt) and are announced politely.
+ *
+ * Native controls pass their field (`[field]`); custom controls that receive
+ * `errors`/`touched` from `[formField]` pass those directly (`[errors]`, `[showErrors]`).
  */
 @Component({
   selector: 'ui-form-field',
   imports: [LucideDynamicIcon],
   template: `
     @if (label()) {
-      <label class="label" [attr.for]="for()">
+      <label class="label" [attr.for]="for()" [id]="for() + '-label'">
         {{ label() }}
         @if (optional()) {
           <span class="ms-1 font-normal text-fg-subtle">{{ optional() }}</span>
@@ -50,19 +70,19 @@ export class FormFieldShell {
   readonly hint = input('');
   readonly optional = input('');
   readonly field = input<(() => FieldState<unknown, string>) | null>(null);
+  readonly errors = input<readonly ValidationLike[]>([]);
+  readonly showErrors = input(false);
 
   protected readonly error = computed(() => {
     const field = this.field();
-    if (!field) return null;
-    const state = field();
-    if (!state.touched() || state.valid()) return null;
-    const first = state.errors()[0] as unknown as ({ kind: string; message?: string } & Record<string, unknown>) | undefined;
-    if (!first) return null;
-    const key = first.message ?? ERROR_KEYS[first.kind] ?? 'validation.invalid';
-    return this.language.t(key, {
-      min: first['min'],
-      max: first['max'],
-      count: first['minLength'] ?? first['maxLength'],
-    });
+    let first: ValidationLike | undefined;
+    if (field) {
+      const state = field();
+      if (!state.touched() || state.valid()) return null;
+      first = state.errors()[0] as unknown as ValidationLike | undefined;
+    } else if (this.showErrors()) {
+      first = this.errors()[0];
+    }
+    return first ? validationMessage(first, (key, params) => this.language.t(key, params)) : null;
   });
 }

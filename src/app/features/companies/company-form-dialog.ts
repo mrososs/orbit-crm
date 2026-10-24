@@ -8,10 +8,12 @@ import { regionName } from '../../core/i18n/locale.utils';
 import { Company, COMPANY_SIZES, CompanySize, fullName, Industry, INDUSTRIES } from '../../core/models';
 import { CURRENT_USER_ID } from '../../core/services/session';
 import { ToastService } from '../../core/services/toast.service';
-import { FieldAria } from '../../shared/directives/field-aria';
 import { Button } from '../../shared/ui/button';
 import { DialogFrame } from '../../shared/ui/dialog/dialog-frame';
-import { FormFieldShell } from '../../shared/ui/form-field';
+import { Combobox } from '../../shared/ui/controls/combobox';
+import { Select } from '../../shared/ui/controls/select';
+import { TextInput } from '../../shared/ui/controls/text-input';
+import { Textarea } from '../../shared/ui/controls/textarea';
 import { CompanyDraft, CrmService } from '../../state/crm.service';
 import { CompaniesStore, TeamStore } from '../../state/entity-stores';
 
@@ -41,7 +43,7 @@ const URL_PATTERN = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(\/\S*)?$/i;
 
 @Component({
   selector: 'app-company-form-dialog',
-  imports: [DialogFrame, FormField, FieldAria, FormFieldShell, Button, TranslatePipe],
+  imports: [DialogFrame, FormField, TextInput, Select, Combobox, Textarea, Button, TranslatePipe],
   template: `
     <form (submit)="save($event)" novalidate class="contents">
       <ui-dialog-frame
@@ -50,46 +52,14 @@ const URL_PATTERN = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(\/\S*)?$/i;
         icon="building"
       >
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <ui-form-field for="company-name" [label]="'companies.fields.name' | translate" [field]="companyForm.name">
-            <input id="company-name" class="control" [formField]="companyForm.name" [placeholder]="'companies.fields.namePlaceholder' | translate" data-testid="company-name" />
-          </ui-form-field>
-          <ui-form-field for="company-website" [label]="'companies.fields.website' | translate" [field]="companyForm.website" [optional]="'common.optional' | translate">
-            <input id="company-website" type="url" dir="ltr" class="control" [formField]="companyForm.website" [placeholder]="'companies.fields.websitePlaceholder' | translate" />
-          </ui-form-field>
-          <ui-form-field for="company-industry" [label]="'companies.fields.industry' | translate">
-            <select id="company-industry" class="control" [formField]="companyForm.industry">
-              @for (i of industries; track i) {
-                <option [value]="i">{{ 'enums.industry.' + i | translate }}</option>
-              }
-            </select>
-          </ui-form-field>
-          <ui-form-field for="company-size" [label]="'companies.fields.size' | translate">
-            <select id="company-size" class="control" [formField]="companyForm.size">
-              @for (s of sizes; track s) {
-                <option [value]="s">{{ 'enums.companySize.' + s | translate }}</option>
-              }
-            </select>
-          </ui-form-field>
-          <ui-form-field for="company-city" [label]="'companies.fields.city' | translate" [field]="companyForm.city">
-            <input id="company-city" class="control" [formField]="companyForm.city" data-testid="company-city" />
-          </ui-form-field>
-          <ui-form-field for="company-country" [label]="'companies.fields.country' | translate">
-            <select id="company-country" class="control" [formField]="companyForm.countryCode">
-              @for (c of countries(); track c.code) {
-                <option [value]="c.code">{{ c.name }}</option>
-              }
-            </select>
-          </ui-form-field>
-          <ui-form-field class="sm:col-span-2" for="company-owner" [label]="'companies.fields.owner' | translate">
-            <select id="company-owner" class="control" [formField]="companyForm.ownerId">
-              @for (m of team.members(); track m.id) {
-                <option [value]="m.id">{{ name(m) }}</option>
-              }
-            </select>
-          </ui-form-field>
-          <ui-form-field class="sm:col-span-2" for="company-description" [label]="'companies.fields.description' | translate" [optional]="'common.optional' | translate">
-            <textarea id="company-description" rows="3" class="control" [formField]="companyForm.description" [placeholder]="'companies.fields.descriptionPlaceholder' | translate"></textarea>
-          </ui-form-field>
+          <ui-text-input inputId="company-name" testId="company-name" [label]="'companies.fields.name' | translate" [placeholder]="'companies.fields.namePlaceholder' | translate" [formField]="companyForm.name" />
+          <ui-text-input inputId="company-website" type="url" optional [label]="'companies.fields.website' | translate" [placeholder]="'companies.fields.websitePlaceholder' | translate" [formField]="companyForm.website" />
+          <ui-select inputId="company-industry" [label]="'companies.fields.industry' | translate" [options]="industryOptions()" [formField]="companyForm.industry" />
+          <ui-select inputId="company-size" [label]="'companies.fields.size' | translate" [options]="sizeOptions()" [formField]="companyForm.size" />
+          <ui-text-input inputId="company-city" testId="company-city" [label]="'companies.fields.city' | translate" [formField]="companyForm.city" />
+          <ui-combobox inputId="company-country" [label]="'companies.fields.country' | translate" [options]="countries()" [formField]="companyForm.countryCode" />
+          <ui-select class="sm:col-span-2" inputId="company-owner" [label]="'companies.fields.owner' | translate" [options]="ownerOptions()" [formField]="companyForm.ownerId" />
+          <ui-textarea class="sm:col-span-2" inputId="company-description" optional [label]="'companies.fields.description' | translate" [placeholder]="'companies.fields.descriptionPlaceholder' | translate" [formField]="companyForm.description" />
         </div>
 
         @if (failed()) {
@@ -115,12 +85,17 @@ export class CompanyFormDialog {
   private readonly router = inject(Router);
   private readonly language = inject(LanguageService);
   private readonly companies = inject(CompaniesStore);
-  protected readonly team = inject(TeamStore);
+  private readonly team = inject(TeamStore);
 
   protected readonly isEdit = !!this.data.company;
-  protected readonly industries = INDUSTRIES;
-  protected readonly sizes = COMPANY_SIZES;
-  protected readonly name = fullName;
+
+  protected readonly industryOptions = computed(() =>
+    INDUSTRIES.map((i) => ({ value: i, label: this.language.t(`enums.industry.${i}`) })),
+  );
+  protected readonly sizeOptions = computed(() =>
+    COMPANY_SIZES.map((s) => ({ value: s, label: this.language.t(`enums.companySize.${s}`) })),
+  );
+  protected readonly ownerOptions = computed(() => this.team.members().map((m) => ({ value: m.id, label: fullName(m) })));
   protected readonly saving = signal(false);
   protected readonly failed = signal(false);
   /** Set while persisting so uniqueness checks ignore the record being saved. */
@@ -131,8 +106,8 @@ export class CompanyFormDialog {
     const current = this.data.company?.countryCode;
     const codes = current && !COUNTRY_CODES.includes(current) ? [...COUNTRY_CODES, current] : COUNTRY_CODES;
     return codes
-      .map((code) => ({ code, name: regionName(code, locale) }))
-      .sort((a, b) => a.name.localeCompare(b.name, locale));
+      .map((code) => ({ value: code, label: regionName(code, locale) }))
+      .sort((a, b) => a.label.localeCompare(b.label, locale));
   });
 
   private readonly model = signal<CompanyFormModel>(this.initialModel());

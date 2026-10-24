@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, DOCUMENT, inject, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RANGE_PRESETS } from '../../core/analytics/date-range';
@@ -23,11 +24,11 @@ import {
   TimelineStore,
 } from '../../state/entity-stores';
 import { WorkspaceService } from '../../state/workspace.service';
-import { SelectValue } from '../../shared/directives/select-value';
+import { Select } from '../../shared/ui/controls/select';
 
 @Component({
   selector: 'app-settings-page',
-  imports: [SelectValue, TranslatePipe, LucideDynamicIcon, Avatar, Button, NumberPipe, LocalDatePipe],
+  imports: [Select, RouterLink, TranslatePipe, LucideDynamicIcon, Avatar, Button, NumberPipe, LocalDatePipe],
   template: `
     <div class="page max-w-5xl animate-rise-in">
       <header class="page-header">
@@ -140,11 +141,7 @@ import { SelectValue } from '../../shared/directives/select-value';
           <div class="flex flex-col gap-4">
             <div class="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
               <label for="pref-range" class="text-sm font-medium text-fg">{{ 'settings.defaultRange' | translate }}</label>
-              <select id="pref-range" class="control control-sm sm:w-48" [uiValue]="prefs.dashboardRange()" (change)="setRange($event)">
-                @for (r of ranges; track r) {
-                  <option [value]="r">{{ 'ranges.' + r | translate }}</option>
-                }
-              </select>
+              <ui-select inputId="pref-range" size="sm" class="sm:w-48" testId="pref-range" [options]="rangeOptions()" [value]="prefs.dashboardRange()" (valueChange)="setRange($event)" />
             </div>
             <div class="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
               <span id="pref-view" class="text-sm font-medium text-fg">{{ 'settings.defaultView' | translate }}</span>
@@ -207,6 +204,9 @@ import { SelectValue } from '../../shared/directives/select-value';
                 <li class="ltr-content rounded-md border border-line bg-surface px-2 py-0.5 text-xs font-medium text-fg-muted">{{ tech }}</li>
               }
             </ul>
+            <a routerLink="/showcase" class="link mt-4 inline-flex items-center gap-1.5 text-sm" data-testid="showcase-link">
+              <svg lucideIcon="component" [size]="15" aria-hidden="true"></svg>{{ 'settings.showcaseLink' | translate }}
+            </a>
           </div>
         </section>
       </div>
@@ -245,6 +245,7 @@ export class SettingsPage implements OnInit {
   protected readonly name = fullName;
   protected readonly schemaVersion = SCHEMA_VERSION;
   protected readonly ranges = RANGE_PRESETS;
+  protected readonly rangeOptions = computed(() => this.ranges.map((r) => ({ value: r, label: this.language.t(`ranges.${r}`) })));
   protected readonly views: PipelineView[] = ['board', 'list'];
   protected readonly themes: { id: ThemePreference; icon: string }[] = [
     { id: 'light', icon: 'sun' },
@@ -281,8 +282,8 @@ export class SettingsPage implements OnInit {
     this.prefs.set('theme', theme);
   }
 
-  protected setRange(event: Event): void {
-    this.prefs.set('dashboardRange', (event.target as HTMLSelectElement).value as Preferences['dashboardRange']);
+  protected setRange(value: string): void {
+    this.prefs.set('dashboardRange', value as Preferences['dashboardRange']);
   }
 
   protected setView(view: PipelineView): void {

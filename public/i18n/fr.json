@@ -22,7 +22,8 @@
     "overdueCount": {
       "one": "{{count}} tâche en retard",
       "other": "{{count}} tâches en retard"
-    }
+    },
+    "showcase": "Vitrine des contrôles de formulaire"
   },
   "common": {
     "new": "Nouveau",
@@ -675,7 +676,8 @@
     "resetDone": "Données de démo restaurées",
     "about": "À propos de cette démo",
     "aboutText": "Orbit CRM est un projet de portfolio exclusivement front-end. Il fonctionne entièrement dans votre navigateur avec des données générées — sans serveur, compte ni suivi.",
-    "builtWith": "Conçu avec"
+    "builtWith": "Conçu avec",
+    "showcaseLink": "Découvrir la vitrine des contrôles de formulaire"
   },
   "validation": {
     "required": "Ce champ est obligatoire",
@@ -690,7 +692,9 @@
     "url": "Saisissez une adresse web valide",
     "positive": "Saisissez un montant supérieur à zéro",
     "duplicateEmail": "Un contact utilise déjà cette adresse e-mail",
-    "duplicateCompany": "Une entreprise porte déjà ce nom"
+    "duplicateCompany": "Une entreprise porte déjà ce nom",
+    "number": "Saisissez un nombre",
+    "amount": "Saisissez un montant valide, par ex. 12500"
   },
   "errors": {
     "generic": "Une erreur est survenue. Veuillez réessayer.",
@@ -702,5 +706,101 @@
     "title": "Page introuvable",
     "description": "La page que vous cherchez n’existe pas ou a été déplacée.",
     "back": "Aller au tableau de bord"
+  },
+  "controls": {
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "clearSelection": "Effacer la sélection",
+    "noResults": "Aucun résultat",
+    "resultCount": {
+      "one": "{{count}} résultat disponible",
+      "other": "{{count}} résultats disponibles"
+    },
+    "characterCount": "{{count}} / {{max}}",
+    "date": {
+      "today": "Aujourd’hui",
+      "tomorrow": "Demain",
+      "nextWeek": "Dans une semaine",
+      "shortcuts": "Dates rapides"
+    }
+  },
+  "showcase": {
+    "eyebrow": "Orbit UI",
+    "title": "Contrôles de formulaire",
+    "subtitle": "Des contrôles réutilisables construits sur les champs natifs et l’API de contrôles personnalisés d’Angular Signal Forms. Ils suivent la langue, le sens d’écriture et le thème actifs.",
+    "playground": "Bac à sable",
+    "playgroundHint": "Un formulaire Signal Forms en direct. Quittez un champ ou cliquez sur Valider pour voir les erreurs traduites. Rien n’est enregistré.",
+    "sections": {
+      "text": "Texte",
+      "numbers": "Nombres et montants",
+      "choices": "Choix et dates",
+      "long": "Texte long et interrupteurs"
+    },
+    "fields": {
+      "name": "Nom complet",
+      "email": "E-mail professionnel",
+      "phone": "Téléphone",
+      "password": "Mot de passe",
+      "passwordHint": "Au moins 8 caractères.",
+      "seats": "Licences",
+      "seatsUnit": "licences",
+      "budget": "Budget annuel",
+      "plan": "Formule",
+      "planPlaceholder": "Choisissez une formule",
+      "company": "Entreprise",
+      "companyPlaceholder": "Rechercher une entreprise…",
+      "startDate": "Date de début",
+      "startTime": "Heure de lancement",
+      "notes": "Notes",
+      "notesPlaceholder": "Ce que l’équipe doit savoir",
+      "terms": "Je comprends qu’il s’agit d’une démo",
+      "termsHint": "Obligatoire pour valider le formulaire.",
+      "updates": "Nouveautés produit",
+      "updatesHint": "Un interrupteur s’applique immédiatement."
+    },
+    "plans": {
+      "starter": "Essentiel",
+      "growth": "Croissance",
+      "enterprise": "Entreprise"
+    },
+    "contactCount": {
+      "one": "{{count}} contact",
+      "other": "{{count}} contacts"
+    },
+    "validate": "Valider",
+    "reset": "Réinitialiser",
+    "resultValid": "Tous les champs sont valides.",
+    "resultInvalid": {
+      "one": "{{count}} champ à corriger.",
+      "other": "{{count}} champs à corriger."
+    },
+    "toastValid": "Parfait, {{name}} ! Rien n’a été enregistré.",
+    "state": "État du formulaire",
+    "stateHint": "Signaux lus directement depuis le formulaire.",
+    "flags": {
+      "valid": "Valide",
+      "touched": "Visité",
+      "dirty": "Modifié",
+      "pending": "En cours"
+    },
+    "yes": "Oui",
+    "no": "Non",
+    "value": "Valeur du modèle",
+    "states": "États",
+    "statesHint": "Les états désactivé et lecture seule proviennent des règles Signal Forms ; le chargement et l’erreur, des entrées du contrôle.",
+    "statesList": {
+      "disabled": "Désactivé",
+      "readonly": "Liste en lecture seule",
+      "loading": "Options en chargement",
+      "error": "Valeur invalide",
+      "disabledDate": "Date désactivée",
+      "readonlyAmount": "Montant en lecture seule",
+      "disabledCheckbox": "Case désactivée",
+      "readonlyToggle": "Interrupteur en lecture seule"
+    },
+    "validation": {
+      "future": "Choisissez aujourd’hui ou une date ultérieure",
+      "terms": "Veuillez confirmer pour continuer"
+    }
   }
 }

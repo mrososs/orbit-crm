@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { Router, RouterLink } from '@angular/router';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageService } from '../../core/i18n/language.service';
 import { QuickCreateService } from '../../core/layout/quick-create.service';
 import { Contact, CONTACT_STATUSES, ContactStatus, fullName, LEAD_SOURCES, LeadSource } from '../../core/models';
 import { PreferencesService } from '../../core/services/preferences.service';
@@ -19,11 +20,11 @@ import { ariaSort, SortHeader, SortState } from '../../shared/ui/sort-header';
 import { debounced } from '../../shared/utils/signals';
 import { CompaniesStore, ContactsStore, TeamStore } from '../../state/entity-stores';
 import { ContactsViewStore } from './contacts-view.store';
-import { SelectValue } from '../../shared/directives/select-value';
+import { Select } from '../../shared/ui/controls/select';
 
 @Component({
   selector: 'app-contacts-page',
-  imports: [SelectValue, 
+  imports: [Select, 
     RouterLink,
     LucideDynamicIcon,
     TranslatePipe,
@@ -71,27 +72,9 @@ import { SelectValue } from '../../shared/directives/select-value';
             />
           </div>
           <div class="grid grid-cols-3 gap-2 sm:flex">
-            <label class="sr-only" for="contact-status">{{ 'filters.status' | translate }}</label>
-            <select id="contact-status" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.status()" (change)="setStatus($event)" data-testid="filter-status">
-              <option value="all">{{ 'filters.allStatuses' | translate }}</option>
-              @for (s of statuses; track s) {
-                <option [value]="s">{{ 'enums.contactStatus.' + s | translate }}</option>
-              }
-            </select>
-            <label class="sr-only" for="contact-source">{{ 'filters.source' | translate }}</label>
-            <select id="contact-source" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.source()" (change)="setSource($event)" data-testid="filter-source">
-              <option value="all">{{ 'filters.allSources' | translate }}</option>
-              @for (s of sources; track s) {
-                <option [value]="s">{{ 'enums.source.' + s | translate }}</option>
-              }
-            </select>
-            <label class="sr-only" for="contact-owner">{{ 'filters.owner' | translate }}</label>
-            <select id="contact-owner" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.ownerId()" (change)="store.setOwner($any($event.target).value)">
-              <option value="all">{{ 'filters.allOwners' | translate }}</option>
-              @for (m of team.members(); track m.id) {
-                <option [value]="m.id">{{ name(m) }}</option>
-              }
-            </select>
+            <ui-select inputId="contact-status-filter" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-status" [ariaLabel]="'filters.status' | translate" [options]="statusOptions()" [value]="store.status()" (valueChange)="setStatus($event)" />
+            <ui-select inputId="contact-source-filter" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-source" [ariaLabel]="'filters.source' | translate" [options]="sourceOptions()" [value]="store.source()" (valueChange)="setSource($event)" />
+            <ui-select inputId="contact-owner-filter" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-contact-owner" [ariaLabel]="'filters.owner' | translate" [options]="ownerOptions()" [value]="store.ownerId()" (valueChange)="store.setOwner($event)" />
           </div>
           @if (store.activeFilters() > 0) {
             <button type="button" class="btn btn-ghost btn-sm self-start lg:self-auto" (click)="clear()">
@@ -238,6 +221,7 @@ import { SelectValue } from '../../shared/directives/select-value';
 export class ContactsPage {
   protected readonly store = inject(ContactsViewStore);
   protected readonly team = inject(TeamStore);
+  private readonly language = inject(LanguageService);
   protected readonly create = inject(QuickCreateService);
   protected readonly actions = inject(RecordActions);
   protected readonly viewport = inject(ViewportService);
@@ -249,6 +233,12 @@ export class ContactsPage {
   protected readonly name = fullName;
   protected readonly statuses = CONTACT_STATUSES;
   protected readonly sources = LEAD_SOURCES;
+  protected readonly statusOptions = computed(() => [{ value: 'all', label: this.language.t('filters.allStatuses') }, ...this.statuses.map((v) => ({ value: v, label: this.language.t(`enums.contactStatus.${v}`) }))]);
+  protected readonly sourceOptions = computed(() => [{ value: 'all', label: this.language.t('filters.allSources') }, ...this.sources.map((v) => ({ value: v, label: this.language.t(`enums.source.${v}`) }))]);
+  protected readonly ownerOptions = computed(() => [
+    { value: 'all', label: this.language.t('filters.allOwners') },
+    ...this.team.members().map((m) => ({ value: m.id, label: fullName(m) })),
+  ]);
   protected readonly compact = computed(() => this.prefs.density() === 'compact');
   protected readonly contactCount = computed(() => this.contactsStore.entities().length);
 
@@ -279,12 +269,12 @@ export class ContactsPage {
     this.store.setSort(sort);
   }
 
-  protected setStatus(event: Event): void {
-    this.store.setStatus((event.target as HTMLSelectElement).value as ContactStatus | 'all');
+  protected setStatus(value: string): void {
+    this.store.setStatus(value as ContactStatus | 'all');
   }
 
-  protected setSource(event: Event): void {
-    this.store.setSource((event.target as HTMLSelectElement).value as LeadSource | 'all');
+  protected setSource(value: string): void {
+    this.store.setSource(value as LeadSource | 'all');
   }
 
   protected open(contact: Contact): void {

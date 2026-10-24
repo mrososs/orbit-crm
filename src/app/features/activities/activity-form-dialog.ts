@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, u
 import { form, FormField, minLength, required, submit } from '@angular/forms/signals';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Activity, ACTIVITY_TYPES, ActivityType, fullName, isOpenStage, Priority, PRIORITIES } from '../../core/models';
+import { LanguageService } from '../../core/i18n/language.service';
 import { CLOCK } from '../../core/services/platform';
 import { CURRENT_USER_ID } from '../../core/services/session';
 import { ToastService } from '../../core/services/toast.service';
@@ -10,11 +11,15 @@ import { FieldAria } from '../../shared/directives/field-aria';
 import { ACTIVITY_ICON } from '../../shared/domain/domain-badges';
 import { Button } from '../../shared/ui/button';
 import { DialogFrame } from '../../shared/ui/dialog/dialog-frame';
-import { FormFieldShell } from '../../shared/ui/form-field';
+import { Combobox } from '../../shared/ui/controls/combobox';
+import { DatePicker } from '../../shared/ui/controls/date-picker';
+import { Select } from '../../shared/ui/controls/select';
+import { TextInput } from '../../shared/ui/controls/text-input';
+import { Textarea } from '../../shared/ui/controls/textarea';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { addDays, toIsoDate } from '../../shared/utils/date';
 import { ActivityDraft, CrmService } from '../../state/crm.service';
-import { ContactsStore, DealsStore, TeamStore } from '../../state/entity-stores';
+import { CompaniesStore, ContactsStore, DealsStore, TeamStore } from '../../state/entity-stores';
 
 export interface ActivityFormData {
   activity?: Activity;
@@ -35,7 +40,7 @@ interface ActivityFormModel {
 
 @Component({
   selector: 'app-activity-form-dialog',
-  imports: [DialogFrame, FormField, FieldAria, FormFieldShell, Button, TranslatePipe, LucideDynamicIcon],
+  imports: [DialogFrame, FormField, FieldAria, TextInput, Select, Combobox, DatePicker, Textarea, Button, TranslatePipe, LucideDynamicIcon],
   template: `
     <form (submit)="save($event)" novalidate class="contents">
       <ui-dialog-frame
@@ -60,55 +65,14 @@ interface ActivityFormModel {
         </fieldset>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <ui-form-field class="sm:col-span-2" for="activity-subject" [label]="'activities.fields.subject' | translate" [field]="activityForm.subject">
-            <input id="activity-subject" class="control" [formField]="activityForm.subject" [placeholder]="'activities.fields.subjectPlaceholder' | translate" data-testid="activity-subject" />
-          </ui-form-field>
-
-          <ui-form-field for="activity-date" [label]="'activities.fields.dueDate' | translate" [field]="activityForm.dueDate">
-            <input id="activity-date" type="date" class="control" [formField]="activityForm.dueDate" data-testid="activity-date" />
-          </ui-form-field>
-
-          <ui-form-field for="activity-time" [label]="'activities.fields.dueTime' | translate" [field]="activityForm.dueTime">
-            <input id="activity-time" type="time" class="control tabular" [formField]="activityForm.dueTime" />
-          </ui-form-field>
-
-          <ui-form-field for="activity-priority" [label]="'activities.fields.priority' | translate">
-            <select id="activity-priority" class="control" [formField]="activityForm.priority">
-              @for (p of priorities; track p) {
-                <option [value]="p">{{ 'enums.priority.' + p | translate }}</option>
-              }
-            </select>
-          </ui-form-field>
-
-          <ui-form-field for="activity-owner" [label]="'activities.fields.owner' | translate" [field]="activityForm.ownerId">
-            <select id="activity-owner" class="control" [formField]="activityForm.ownerId">
-              @for (m of team.members(); track m.id) {
-                <option [value]="m.id">{{ name(m) }}</option>
-              }
-            </select>
-          </ui-form-field>
-
-          <ui-form-field for="activity-contact" [label]="'activities.fields.contact' | translate" [optional]="'common.optional' | translate">
-            <select id="activity-contact" class="control" [formField]="activityForm.contactId">
-              <option value="">{{ 'activities.fields.noContact' | translate }}</option>
-              @for (c of contactOptions(); track c.id) {
-                <option [value]="c.id">{{ c.name }}</option>
-              }
-            </select>
-          </ui-form-field>
-
-          <ui-form-field for="activity-deal" [label]="'activities.fields.deal' | translate" [optional]="'common.optional' | translate">
-            <select id="activity-deal" class="control" [formField]="activityForm.dealId">
-              <option value="">{{ 'activities.fields.noDeal' | translate }}</option>
-              @for (d of dealOptions(); track d.id) {
-                <option [value]="d.id">{{ d.name }}</option>
-              }
-            </select>
-          </ui-form-field>
-
-          <ui-form-field class="sm:col-span-2" for="activity-description" [label]="'activities.fields.description' | translate" [optional]="'common.optional' | translate">
-            <textarea id="activity-description" rows="3" class="control" [formField]="activityForm.description" [placeholder]="'activities.fields.descriptionPlaceholder' | translate"></textarea>
-          </ui-form-field>
+          <ui-text-input class="sm:col-span-2" inputId="activity-subject" testId="activity-subject" [label]="'activities.fields.subject' | translate" [placeholder]="'activities.fields.subjectPlaceholder' | translate" [formField]="activityForm.subject" />
+          <ui-date-picker inputId="activity-date" testId="activity-date" shortcuts [label]="'activities.fields.dueDate' | translate" [formField]="activityForm.dueDate" />
+          <ui-date-picker inputId="activity-time" type="time" [label]="'activities.fields.dueTime' | translate" [formField]="activityForm.dueTime" />
+          <ui-select inputId="activity-priority" [label]="'activities.fields.priority' | translate" [options]="priorityOptions()" [formField]="activityForm.priority" />
+          <ui-select inputId="activity-owner" [label]="'activities.fields.owner' | translate" [options]="ownerOptions()" [formField]="activityForm.ownerId" />
+          <ui-combobox inputId="activity-contact" testId="activity-contact" optional clearable [label]="'activities.fields.contact' | translate" [placeholder]="'activities.fields.noContact' | translate" [options]="contactOptions()" [formField]="activityForm.contactId" />
+          <ui-combobox inputId="activity-deal" testId="activity-deal" optional clearable [label]="'activities.fields.deal' | translate" [placeholder]="'activities.fields.noDeal' | translate" [options]="dealOptions()" [formField]="activityForm.dealId" />
+          <ui-textarea class="sm:col-span-2" inputId="activity-description" optional [label]="'activities.fields.description' | translate" [placeholder]="'activities.fields.descriptionPlaceholder' | translate" [formField]="activityForm.description" />
         </div>
 
         @if (failed()) {
@@ -132,15 +96,20 @@ export class ActivityFormDialog {
   private readonly crm = inject(CrmService);
   private readonly toast = inject(ToastService);
   private readonly clock = inject(CLOCK);
-  protected readonly team = inject(TeamStore);
+  private readonly language = inject(LanguageService);
+  private readonly team = inject(TeamStore);
   private readonly contacts = inject(ContactsStore);
   private readonly deals = inject(DealsStore);
+  private readonly companies = inject(CompaniesStore);
 
   protected readonly isEdit = !!this.data.activity;
   protected readonly types = ACTIVITY_TYPES;
-  protected readonly priorities = PRIORITIES;
   protected readonly icon = ACTIVITY_ICON;
-  protected readonly name = fullName;
+
+  protected readonly priorityOptions = computed(() =>
+    PRIORITIES.map((p) => ({ value: p, label: this.language.t(`enums.priority.${p}`) })),
+  );
+  protected readonly ownerOptions = computed(() => this.team.members().map((m) => ({ value: m.id, label: fullName(m) })));
   protected readonly saving = signal(false);
   protected readonly failed = signal(false);
 
@@ -154,17 +123,21 @@ export class ActivityFormDialog {
     required(p.ownerId, { message: 'validation.required' });
   });
 
-  protected readonly contactOptions = computed(() =>
-    this.contacts.sorted().map((c) => ({ id: c.id, name: fullName(c) })),
-  );
+  protected readonly contactOptions = computed(() => {
+    const companies = this.companies.entityMap();
+    return this.contacts.sorted().map((c) => {
+      const company = (c.companyId && companies[c.companyId]?.name) || '';
+      return { value: c.id, label: fullName(c), description: company || c.email, keywords: `${company} ${c.email}` };
+    });
+  });
 
   protected readonly dealOptions = computed(() => {
     const current = this.model().dealId;
     return this.deals
       .entities()
       .filter((d) => isOpenStage(d.stage) || d.id === current)
-      .map((d) => ({ id: d.id, name: d.name }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .map((d) => ({ value: d.id, label: d.name }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   });
 
   constructor() {

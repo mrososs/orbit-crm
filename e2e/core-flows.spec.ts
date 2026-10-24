@@ -1,4 +1,4 @@
-import { dragAndDrop, expect, openApp, parseNumber, test } from './fixtures';
+import { dragAndDrop, expect, openApp, parseNumber, test, pickOption } from './fixtures';
 
 test.describe('Dashboard & pipeline', () => {
   test('opens the dashboard with KPIs and rendered charts', async ({ page, consoleErrors }) => {
@@ -65,12 +65,12 @@ test.describe('Dashboard & pipeline', () => {
 
   test('keeps active filters when navigating away and back', async ({ page }) => {
     await openApp(page, '/pipeline');
-    await page.getByTestId('filter-priority').selectOption('high');
-    await page.getByTestId('filter-stage').selectOption('proposal');
+    await pickOption(page, 'filter-priority', 'High');
+    await pickOption(page, 'filter-stage', 'Proposal');
     await page.getByRole('link', { name: 'Contacts' }).first().click();
     await page.getByRole('link', { name: 'Pipeline' }).first().click();
-    await expect(page.getByTestId('filter-priority')).toHaveValue('high');
-    await expect(page.getByTestId('filter-stage')).toHaveValue('proposal');
+    await expect(page.getByTestId('filter-priority')).toHaveAttribute('data-value', 'high');
+    await expect(page.getByTestId('filter-stage')).toHaveAttribute('data-value', 'proposal');
     await expect(page.getByTestId('pipeline-column')).toHaveCount(1);
   });
 
@@ -99,7 +99,7 @@ test.describe('Contacts', () => {
     await page.getByTestId('contact-email').fill('nadia.karim@example.org');
     await page.getByTestId('contact-phone').fill('+33 1 99 00 12 34');
     await page.getByTestId('contact-title').fill('Head of Revenue');
-    await page.getByTestId('contact-company').selectOption({ label: 'Nimbus Software' });
+    await pickOption(page, 'contact-company', 'Nimbus Software');
     await page.getByTestId('contact-submit').click();
     await expect(page.getByTestId('toast').filter({ hasText: 'Contact created' })).toBeVisible();
 
@@ -111,7 +111,7 @@ test.describe('Contacts', () => {
 
     await page.getByTestId('edit-contact').click();
     await page.getByTestId('contact-title').fill('Chief Revenue Officer');
-    await page.getByTestId('contact-status').selectOption('prospect');
+    await pickOption(page, 'contact-status', 'Prospect');
     await page.getByTestId('contact-submit').click();
     await expect(page.getByText('Chief Revenue Officer at Nimbus Software')).toBeVisible();
     expect(consoleErrors).toEqual([]);

@@ -16,3 +16,6 @@ export const PRIMARY_NAV: readonly NavItem[] = [
 export const INSIGHT_NAV: readonly NavItem[] = [{ path: '/reports', label: 'nav.reports', icon: 'chart-column' }];
 
 export const SETTINGS_NAV: NavItem = { path: '/settings', label: 'nav.settings', icon: 'settings' };
+
+/** Demo-only pages: reachable from the command palette and Settings, not the sidebar. */
+export const DEMO_NAV: readonly NavItem[] = [{ path: '/showcase', label: 'nav.showcase', icon: 'component' }];

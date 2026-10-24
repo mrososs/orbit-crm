@@ -1,5 +1,5 @@
 import en from '../public/i18n/en.json';
-import { dragAndDrop, expect, openApp, parseNumber, switchLanguage, test } from './fixtures';
+import { dragAndDrop, expect, openApp, parseNumber, switchLanguage, test, pickOption } from './fixtures';
 
 /** Distinctive English UI strings that must never appear in Arabic or French views. */
 const ENGLISH_PROBES = [
@@ -25,14 +25,14 @@ test.describe('Internationalisation', () => {
 
   test('switches to Arabic RTL and back to French LTR without losing state', async ({ page, consoleErrors }) => {
     await openApp(page, '/pipeline');
-    await page.getByTestId('filter-priority').selectOption('high');
+    await pickOption(page, 'filter-priority', 'High');
     const filteredCount = await page.getByTestId('deal-card').count();
 
     await switchLanguage(page, 'ar');
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('مسار المبيعات');
     // Filters and records survive the language switch.
-    await expect(page.getByTestId('filter-priority')).toHaveValue('high');
+    await expect(page.getByTestId('filter-priority')).toHaveAttribute('data-value', 'high');
     await expect(page.getByTestId('deal-card')).toHaveCount(filteredCount);
 
     // The sidebar moves to the right edge in RTL.

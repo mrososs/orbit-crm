@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { Router, RouterLink } from '@angular/router';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageService } from '../../core/i18n/language.service';
 import { QuickCreateService } from '../../core/layout/quick-create.service';
 import { Company, COMPANY_SIZES, CompanySize, fullName, Industry, INDUSTRIES } from '../../core/models';
 import { PreferencesService } from '../../core/services/preferences.service';
@@ -20,11 +21,11 @@ import { debounced } from '../../shared/utils/signals';
 import { websiteHost } from '../../shared/utils/text';
 import { CompaniesStore, TeamStore } from '../../state/entity-stores';
 import { CompaniesViewStore } from './companies-view.store';
-import { SelectValue } from '../../shared/directives/select-value';
+import { Select } from '../../shared/ui/controls/select';
 
 @Component({
   selector: 'app-companies-page',
-  imports: [SelectValue, 
+  imports: [Select, 
     RouterLink,
     LucideDynamicIcon,
     TranslatePipe,
@@ -65,27 +66,9 @@ import { SelectValue } from '../../shared/directives/select-value';
             <input id="company-search" type="search" class="control control-sm ps-9" [placeholder]="'companies.searchPlaceholder' | translate" [value]="search()" (input)="search.set($any($event.target).value)" data-testid="company-search" />
           </div>
           <div class="grid grid-cols-3 gap-2 sm:flex">
-            <label class="sr-only" for="company-industry">{{ 'filters.industry' | translate }}</label>
-            <select id="company-industry" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.industry()" (change)="setIndustry($event)" data-testid="filter-industry">
-              <option value="all">{{ 'filters.allIndustries' | translate }}</option>
-              @for (i of industries; track i) {
-                <option [value]="i">{{ 'enums.industry.' + i | translate }}</option>
-              }
-            </select>
-            <label class="sr-only" for="company-size">{{ 'filters.size' | translate }}</label>
-            <select id="company-size" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.size()" (change)="setSize($event)">
-              <option value="all">{{ 'filters.allSizes' | translate }}</option>
-              @for (s of sizes; track s) {
-                <option [value]="s">{{ 'enums.companySize.' + s | translate }}</option>
-              }
-            </select>
-            <label class="sr-only" for="company-owner">{{ 'filters.owner' | translate }}</label>
-            <select id="company-owner" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.ownerId()" (change)="store.setOwner($any($event.target).value)">
-              <option value="all">{{ 'filters.allOwners' | translate }}</option>
-              @for (m of team.members(); track m.id) {
-                <option [value]="m.id">{{ name(m) }}</option>
-              }
-            </select>
+            <ui-select inputId="company-industry" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-industry" [ariaLabel]="'filters.industry' | translate" [options]="industryOptions()" [value]="store.industry()" (valueChange)="setIndustry($event)" />
+            <ui-select inputId="company-size" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-size" [ariaLabel]="'filters.size' | translate" [options]="sizeOptions()" [value]="store.size()" (valueChange)="setSize($event)" />
+            <ui-select inputId="company-owner" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-company-owner" [ariaLabel]="'filters.owner' | translate" [options]="ownerOptions()" [value]="store.ownerId()" (valueChange)="store.setOwner($event)" />
           </div>
           @if (store.activeFilters() > 0) {
             <button type="button" class="btn btn-ghost btn-sm self-start lg:self-auto" (click)="clear()">
@@ -218,6 +201,7 @@ import { SelectValue } from '../../shared/directives/select-value';
 export class CompaniesPage {
   protected readonly store = inject(CompaniesViewStore);
   protected readonly team = inject(TeamStore);
+  private readonly language = inject(LanguageService);
   protected readonly create = inject(QuickCreateService);
   protected readonly actions = inject(RecordActions);
   protected readonly viewport = inject(ViewportService);
@@ -229,6 +213,12 @@ export class CompaniesPage {
   protected readonly host = websiteHost;
   protected readonly industries = INDUSTRIES;
   protected readonly sizes = COMPANY_SIZES;
+  protected readonly industryOptions = computed(() => [{ value: 'all', label: this.language.t('filters.allIndustries') }, ...this.industries.map((v) => ({ value: v, label: this.language.t(`enums.industry.${v}`) }))]);
+  protected readonly sizeOptions = computed(() => [{ value: 'all', label: this.language.t('filters.allSizes') }, ...this.sizes.map((v) => ({ value: v, label: this.language.t(`enums.companySize.${v}`) }))]);
+  protected readonly ownerOptions = computed(() => [
+    { value: 'all', label: this.language.t('filters.allOwners') },
+    ...this.team.members().map((m) => ({ value: m.id, label: fullName(m) })),
+  ]);
   protected readonly compact = computed(() => this.prefs.density() === 'compact');
   protected readonly companyCount = computed(() => this.companies.entities().length);
 
@@ -250,12 +240,12 @@ export class CompaniesPage {
     this.store.setSort(sort);
   }
 
-  protected setIndustry(event: Event): void {
-    this.store.setIndustry((event.target as HTMLSelectElement).value as Industry | 'all');
+  protected setIndustry(value: string): void {
+    this.store.setIndustry(value as Industry | 'all');
   }
 
-  protected setSize(event: Event): void {
-    this.store.setSize((event.target as HTMLSelectElement).value as CompanySize | 'all');
+  protected setSize(value: string): void {
+    this.store.setSize(value as CompanySize | 'all');
   }
 
   protected open(company: Company): void {

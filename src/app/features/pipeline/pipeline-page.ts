@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageService } from '../../core/i18n/language.service';
 import { QuickCreateService } from '../../core/layout/quick-create.service';
 import { Deal, DEAL_STAGES, DealStage, fullName, Priority, PRIORITIES } from '../../core/models';
 import { RecordActions } from '../../shared/domain/record-actions';
@@ -12,11 +13,11 @@ import { TeamStore } from '../../state/entity-stores';
 import { PipelineBoard } from './pipeline-board';
 import { PipelineList } from './pipeline-list';
 import { PIPELINE_SORTS, PipelineSort, PipelineStore } from './pipeline.store';
-import { SelectValue } from '../../shared/directives/select-value';
+import { Select } from '../../shared/ui/controls/select';
 
 @Component({
   selector: 'app-pipeline-page',
-  imports: [SelectValue, TranslatePipe, PluralPipe, LucideDynamicIcon, PipelineBoard, PipelineList, EmptyState, MoneyPipe],
+  imports: [Select, TranslatePipe, PluralPipe, LucideDynamicIcon, PipelineBoard, PipelineList, EmptyState, MoneyPipe],
   template: `
     <div class="page animate-rise-in">
       <header class="page-header">
@@ -56,33 +57,10 @@ import { SelectValue } from '../../shared/directives/select-value';
           />
         </div>
         <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
-          <label class="sr-only" for="pipeline-owner">{{ 'filters.owner' | translate }}</label>
-          <select id="pipeline-owner" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.ownerId()" (change)="store.setOwner($any($event.target).value)" data-testid="filter-owner">
-            <option value="all">{{ 'filters.allOwners' | translate }}</option>
-            @for (m of team.members(); track m.id) {
-              <option [value]="m.id">{{ name(m) }}</option>
-            }
-          </select>
-          <label class="sr-only" for="pipeline-priority">{{ 'filters.priority' | translate }}</label>
-          <select id="pipeline-priority" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.priority()" (change)="setPriority($event)" data-testid="filter-priority">
-            <option value="all">{{ 'filters.anyPriority' | translate }}</option>
-            @for (p of priorities; track p) {
-              <option [value]="p">{{ 'enums.priority.' + p | translate }}</option>
-            }
-          </select>
-          <label class="sr-only" for="pipeline-stage">{{ 'filters.stage' | translate }}</label>
-          <select id="pipeline-stage" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.stage()" (change)="setStage($event)" data-testid="filter-stage">
-            <option value="all">{{ 'filters.allStages' | translate }}</option>
-            @for (s of stages; track s) {
-              <option [value]="s">{{ 'enums.stage.' + s | translate }}</option>
-            }
-          </select>
-          <label class="sr-only" for="pipeline-sort">{{ 'filters.sortBy' | translate }}</label>
-          <select id="pipeline-sort" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.sort()" (change)="setSort($event)" data-testid="pipeline-sort">
-            @for (s of sorts; track s) {
-              <option [value]="s">{{ 'pipeline.sort.' + s | translate }}</option>
-            }
-          </select>
+          <ui-select inputId="pipeline-owner" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-owner" [ariaLabel]="'filters.owner' | translate" [options]="ownerOptions()" [value]="store.ownerId()" (valueChange)="store.setOwner($event)" />
+          <ui-select inputId="pipeline-priority" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-priority" [ariaLabel]="'filters.priority' | translate" [options]="priorityOptions()" [value]="store.priority()" (valueChange)="setPriority($event)" />
+          <ui-select inputId="pipeline-stage" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-stage" [ariaLabel]="'filters.stage' | translate" [options]="stageOptions()" [value]="store.stage()" (valueChange)="setStage($event)" />
+          <ui-select inputId="pipeline-sort" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="pipeline-sort" [ariaLabel]="'filters.sortBy' | translate" [options]="sortOptions()" [value]="store.sort()" (valueChange)="setSort($event)" />
         </div>
         @if (store.activeFilters() > 0) {
           <button type="button" class="btn btn-ghost btn-sm self-start lg:self-auto" (click)="clear()">
@@ -116,6 +94,7 @@ import { SelectValue } from '../../shared/directives/select-value';
 export class PipelinePage {
   protected readonly store = inject(PipelineStore);
   protected readonly team = inject(TeamStore);
+  private readonly language = inject(LanguageService);
   private readonly actions = inject(RecordActions);
   private readonly create = inject(QuickCreateService);
 
@@ -123,6 +102,13 @@ export class PipelinePage {
   protected readonly stages = DEAL_STAGES;
   protected readonly priorities = PRIORITIES;
   protected readonly sorts = PIPELINE_SORTS;
+  protected readonly ownerOptions = computed(() => [
+    { value: 'all', label: this.language.t('filters.allOwners') },
+    ...this.team.members().map((m) => ({ value: m.id, label: fullName(m) })),
+  ]);
+  protected readonly priorityOptions = computed(() => [{ value: 'all', label: this.language.t('filters.anyPriority') }, ...this.priorities.map((v) => ({ value: v, label: this.language.t(`enums.priority.${v}`) }))]);
+  protected readonly stageOptions = computed(() => [{ value: 'all', label: this.language.t('filters.allStages') }, ...this.stages.map((v) => ({ value: v, label: this.language.t(`enums.stage.${v}`) }))]);
+  protected readonly sortOptions = computed(() => [...this.sorts.map((v) => ({ value: v, label: this.language.t(`pipeline.sort.${v}`) }))]);
 
   /** Raw input value; the store receives it debounced. */
   protected readonly search = signal(this.store.query());
@@ -140,16 +126,16 @@ export class PipelinePage {
     void this.create.deal({ stage });
   }
 
-  protected setPriority(event: Event): void {
-    this.store.setPriority((event.target as HTMLSelectElement).value as Priority | 'all');
+  protected setPriority(value: string): void {
+    this.store.setPriority(value as Priority | 'all');
   }
 
-  protected setStage(event: Event): void {
-    this.store.setStage((event.target as HTMLSelectElement).value as DealStage | 'all');
+  protected setStage(value: string): void {
+    this.store.setStage(value as DealStage | 'all');
   }
 
-  protected setSort(event: Event): void {
-    this.store.setSort((event.target as HTMLSelectElement).value as PipelineSort);
+  protected setSort(value: string): void {
+    this.store.setSort(value as PipelineSort);
   }
 
   protected clear(): void {

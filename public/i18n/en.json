@@ -22,7 +22,8 @@
     "overdueCount": {
       "one": "{{count}} overdue task",
       "other": "{{count}} overdue tasks"
-    }
+    },
+    "showcase": "Form controls showcase"
   },
   "common": {
     "new": "New",
@@ -675,7 +676,8 @@
     "resetDone": "Demo data restored",
     "about": "About this demo",
     "aboutText": "Orbit CRM is a frontend-only portfolio project. It runs entirely in your browser with seeded data — there is no backend, account or tracking.",
-    "builtWith": "Built with"
+    "builtWith": "Built with",
+    "showcaseLink": "Explore the form controls showcase"
   },
   "validation": {
     "required": "This field is required",
@@ -690,7 +692,9 @@
     "url": "Enter a valid website address",
     "positive": "Enter an amount greater than zero",
     "duplicateEmail": "A contact with this email already exists",
-    "duplicateCompany": "A company with this name already exists"
+    "duplicateCompany": "A company with this name already exists",
+    "number": "Enter a number",
+    "amount": "Enter a valid amount, e.g. 12500"
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -702,5 +706,101 @@
     "title": "Page not found",
     "description": "The page you're looking for doesn't exist or has moved.",
     "back": "Go to dashboard"
+  },
+  "controls": {
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "clearSelection": "Clear selection",
+    "noResults": "No matches",
+    "resultCount": {
+      "one": "{{count}} result available",
+      "other": "{{count}} results available"
+    },
+    "characterCount": "{{count}} / {{max}}",
+    "date": {
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "nextWeek": "In a week",
+      "shortcuts": "Quick dates"
+    }
+  },
+  "showcase": {
+    "eyebrow": "Orbit UI",
+    "title": "Form controls",
+    "subtitle": "Reusable controls built on native inputs and the Angular Signal Forms custom-control API. They follow the active language, direction and theme.",
+    "playground": "Playground",
+    "playgroundHint": "A live Signal Form. Leave a field or press Validate to see localized errors. Nothing is saved.",
+    "sections": {
+      "text": "Text",
+      "numbers": "Numbers & money",
+      "choices": "Choices & dates",
+      "long": "Long text & toggles"
+    },
+    "fields": {
+      "name": "Full name",
+      "email": "Work email",
+      "phone": "Phone",
+      "password": "Password",
+      "passwordHint": "At least 8 characters.",
+      "seats": "Seats",
+      "seatsUnit": "seats",
+      "budget": "Annual budget",
+      "plan": "Plan",
+      "planPlaceholder": "Choose a plan",
+      "company": "Company",
+      "companyPlaceholder": "Search companies…",
+      "startDate": "Start date",
+      "startTime": "Kick-off time",
+      "notes": "Notes",
+      "notesPlaceholder": "Anything the team should know",
+      "terms": "I understand this is a demo",
+      "termsHint": "Required to validate the form.",
+      "updates": "Product updates",
+      "updatesHint": "A switch takes effect immediately."
+    },
+    "plans": {
+      "starter": "Starter",
+      "growth": "Growth",
+      "enterprise": "Enterprise"
+    },
+    "contactCount": {
+      "one": "{{count}} contact",
+      "other": "{{count}} contacts"
+    },
+    "validate": "Validate",
+    "reset": "Reset",
+    "resultValid": "All fields are valid.",
+    "resultInvalid": {
+      "one": "{{count}} field needs attention.",
+      "other": "{{count}} fields need attention."
+    },
+    "toastValid": "Looks good, {{name}}! Nothing was saved.",
+    "state": "Form state",
+    "stateHint": "Signals read directly from the Signal Form.",
+    "flags": {
+      "valid": "Valid",
+      "touched": "Touched",
+      "dirty": "Dirty",
+      "pending": "Pending"
+    },
+    "yes": "Yes",
+    "no": "No",
+    "value": "Model value",
+    "states": "States",
+    "statesHint": "Disabled and read-only states come from Signal Forms rules; loading and error states from the control inputs.",
+    "statesList": {
+      "disabled": "Disabled",
+      "readonly": "Read-only select",
+      "loading": "Loading options",
+      "error": "Invalid value",
+      "disabledDate": "Disabled date",
+      "readonlyAmount": "Read-only amount",
+      "disabledCheckbox": "Disabled checkbox",
+      "readonlyToggle": "Read-only switch"
+    },
+    "validation": {
+      "future": "Choose today or a later date",
+      "terms": "Please confirm to continue"
+    }
   }
 }

@@ -15,13 +15,18 @@ import {
   PRIORITIES,
   WORKSPACE_CURRENCY,
 } from '../../core/models';
+import { LanguageService } from '../../core/i18n/language.service';
 import { CLOCK } from '../../core/services/platform';
 import { CURRENT_USER_ID } from '../../core/services/session';
 import { ToastService } from '../../core/services/toast.service';
-import { FieldAria } from '../../shared/directives/field-aria';
 import { Button } from '../../shared/ui/button';
 import { DialogFrame } from '../../shared/ui/dialog/dialog-frame';
-import { FormFieldShell } from '../../shared/ui/form-field';
+import { Combobox } from '../../shared/ui/controls/combobox';
+import { CurrencyInput } from '../../shared/ui/controls/currency-input';
+import { DatePicker } from '../../shared/ui/controls/date-picker';
+import { Select } from '../../shared/ui/controls/select';
+import { TextInput } from '../../shared/ui/controls/text-input';
+import { Textarea } from '../../shared/ui/controls/textarea';
 import { addDays, toIsoDate } from '../../shared/utils/date';
 import { CrmService, DealDraft } from '../../state/crm.service';
 import { CompaniesStore, ContactsStore, TeamStore } from '../../state/entity-stores';
@@ -47,7 +52,7 @@ interface DealFormModel {
 
 @Component({
   selector: 'app-deal-form-dialog',
-  imports: [DialogFrame, FormField, FieldAria, FormFieldShell, Button, TranslatePipe],
+  imports: [DialogFrame, FormField, TextInput, Select, Combobox, CurrencyInput, DatePicker, Textarea, Button, TranslatePipe],
   template: `
     <form (submit)="save($event)" novalidate class="contents">
       <ui-dialog-frame
@@ -56,81 +61,17 @@ interface DealFormModel {
         icon="briefcase"
       >
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <ui-form-field class="sm:col-span-2" for="deal-name" [label]="'deals.fields.name' | translate" [field]="dealForm.name">
-            <input id="deal-name" class="control" [formField]="dealForm.name" [placeholder]="'deals.fields.namePlaceholder' | translate" data-testid="deal-name" />
-          </ui-form-field>
-
-          <ui-form-field for="deal-company" [label]="'deals.fields.company' | translate" [field]="dealForm.companyId">
-            <select id="deal-company" class="control" [formField]="dealForm.companyId" data-testid="deal-company">
-              <option value="">{{ 'deals.fields.companyPlaceholder' | translate }}</option>
-              @for (c of companies.sorted(); track c.id) {
-                <option [value]="c.id">{{ c.name }}</option>
-              }
-            </select>
-          </ui-form-field>
-
-          <ui-form-field for="deal-contact" [label]="'deals.fields.contact' | translate" [optional]="'common.optional' | translate">
-            <select id="deal-contact" class="control" [formField]="dealForm.contactId">
-              <option value="">{{ 'deals.fields.noContact' | translate }}</option>
-              @for (c of companyContacts(); track c.id) {
-                <option [value]="c.id">{{ c.name }}</option>
-              }
-            </select>
-          </ui-form-field>
-
-          <ui-form-field for="deal-value" [label]="('deals.fields.value' | translate) + ' (' + currency + ')'" [field]="dealForm.value">
-            <input id="deal-value" type="number" inputmode="decimal" step="500" class="control tabular" [formField]="dealForm.value" data-testid="deal-value" />
-          </ui-form-field>
-
-          <ui-form-field for="deal-close" [label]="'deals.fields.closeDate' | translate" [field]="dealForm.expectedCloseDate">
-            <input id="deal-close" type="date" class="control" [formField]="dealForm.expectedCloseDate" />
-          </ui-form-field>
-
-          <ui-form-field for="deal-stage" [label]="'deals.fields.stage' | translate">
-            <select id="deal-stage" class="control" [formField]="dealForm.stage" data-testid="deal-stage">
-              @for (s of stages; track s) {
-                <option [value]="s">{{ 'enums.stage.' + s | translate }}</option>
-              }
-            </select>
-          </ui-form-field>
-
-          <ui-form-field for="deal-priority" [label]="'deals.fields.priority' | translate">
-            <select id="deal-priority" class="control" [formField]="dealForm.priority">
-              @for (p of priorities; track p) {
-                <option [value]="p">{{ 'enums.priority.' + p | translate }}</option>
-              }
-            </select>
-          </ui-form-field>
-
-          <ui-form-field for="deal-owner" [label]="'deals.fields.owner' | translate" [field]="dealForm.ownerId">
-            <select id="deal-owner" class="control" [formField]="dealForm.ownerId">
-              @for (m of team.members(); track m.id) {
-                <option [value]="m.id">{{ name(m) }}</option>
-              }
-            </select>
-          </ui-form-field>
-
-          <ui-form-field for="deal-source" [label]="'deals.fields.source' | translate">
-            <select id="deal-source" class="control" [formField]="dealForm.source">
-              @for (s of sources; track s) {
-                <option [value]="s">{{ 'enums.source.' + s | translate }}</option>
-              }
-            </select>
-          </ui-form-field>
-
-          <ui-form-field
-            class="sm:col-span-2"
-            for="deal-tags"
-            [label]="'deals.fields.tags' | translate"
-            [hint]="'deals.fields.tagsHint' | translate"
-            [optional]="'common.optional' | translate"
-          >
-            <input id="deal-tags" class="control" [formField]="dealForm.tags" [placeholder]="'deals.fields.tagsPlaceholder' | translate" />
-          </ui-form-field>
-
-          <ui-form-field class="sm:col-span-2" for="deal-notes" [label]="'deals.fields.notes' | translate" [optional]="'common.optional' | translate">
-            <textarea id="deal-notes" rows="3" class="control" [formField]="dealForm.notes" [placeholder]="'deals.fields.notesPlaceholder' | translate"></textarea>
-          </ui-form-field>
+          <ui-text-input class="sm:col-span-2" inputId="deal-name" testId="deal-name" [label]="'deals.fields.name' | translate" [placeholder]="'deals.fields.namePlaceholder' | translate" [formField]="dealForm.name" />
+          <ui-combobox inputId="deal-company" testId="deal-company" [label]="'deals.fields.company' | translate" [placeholder]="'deals.fields.companyPlaceholder' | translate" [options]="companyOptions()" [formField]="dealForm.companyId" />
+          <ui-select inputId="deal-contact" optional [label]="'deals.fields.contact' | translate" [placeholder]="'deals.fields.noContact' | translate" [options]="companyContacts()" [formField]="dealForm.contactId" />
+          <ui-currency-input inputId="deal-value" testId="deal-value" [label]="('deals.fields.value' | translate) + ' (' + currency + ')'" [formField]="dealForm.value" />
+          <ui-date-picker inputId="deal-close" testId="deal-close" [label]="'deals.fields.closeDate' | translate" [formField]="dealForm.expectedCloseDate" />
+          <ui-select inputId="deal-stage" testId="deal-stage" [label]="'deals.fields.stage' | translate" [options]="stageOptions()" [formField]="dealForm.stage" />
+          <ui-select inputId="deal-priority" [label]="'deals.fields.priority' | translate" [options]="priorityOptions()" [formField]="dealForm.priority" />
+          <ui-select inputId="deal-owner" [label]="'deals.fields.owner' | translate" [options]="ownerOptions()" [formField]="dealForm.ownerId" />
+          <ui-select inputId="deal-source" [label]="'deals.fields.source' | translate" [options]="sourceOptions()" [formField]="dealForm.source" />
+          <ui-text-input class="sm:col-span-2" inputId="deal-tags" optional [label]="'deals.fields.tags' | translate" [hint]="'deals.fields.tagsHint' | translate" [placeholder]="'deals.fields.tagsPlaceholder' | translate" [formField]="dealForm.tags" />
+          <ui-textarea class="sm:col-span-2" inputId="deal-notes" optional [label]="'deals.fields.notes' | translate" [placeholder]="'deals.fields.notesPlaceholder' | translate" [formField]="dealForm.notes" />
         </div>
 
         @if (failed()) {
@@ -155,16 +96,21 @@ export class DealFormDialog {
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
   private readonly clock = inject(CLOCK);
-  protected readonly companies = inject(CompaniesStore);
-  protected readonly team = inject(TeamStore);
+  private readonly language = inject(LanguageService);
+  private readonly companies = inject(CompaniesStore);
+  private readonly team = inject(TeamStore);
   private readonly contacts = inject(ContactsStore);
 
   protected readonly isEdit = !!this.data.deal;
-  protected readonly stages = DEAL_STAGES;
-  protected readonly priorities = PRIORITIES;
-  protected readonly sources = LEAD_SOURCES;
   protected readonly currency = WORKSPACE_CURRENCY;
-  protected readonly name = fullName;
+
+  protected readonly companyOptions = computed(() => this.companies.sorted().map((c) => ({ value: c.id, label: c.name, description: c.city, keywords: c.city })));
+  protected readonly stageOptions = computed(() => DEAL_STAGES.map((s) => ({ value: s, label: this.language.t(`enums.stage.${s}`) })));
+  protected readonly priorityOptions = computed(() =>
+    PRIORITIES.map((p) => ({ value: p, label: this.language.t(`enums.priority.${p}`) })),
+  );
+  protected readonly sourceOptions = computed(() => LEAD_SOURCES.map((s) => ({ value: s, label: this.language.t(`enums.source.${s}`) })));
+  protected readonly ownerOptions = computed(() => this.team.members().map((m) => ({ value: m.id, label: fullName(m) })));
   protected readonly saving = signal(false);
   protected readonly failed = signal(false);
 
@@ -182,8 +128,8 @@ export class DealFormDialog {
   protected readonly companyContacts = computed(() => {
     const companyId = this.model().companyId;
     return (this.contacts.byCompany().get(companyId) ?? [])
-      .map((c) => ({ id: c.id, name: fullName(c) }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .map((c) => ({ value: c.id, label: fullName(c) }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   });
 
   constructor() {
@@ -192,7 +138,7 @@ export class DealFormDialog {
       const options = this.companyContacts();
       untracked(() => {
         const contactId = this.model().contactId;
-        if (contactId && !options.some((o) => o.id === contactId)) {
+        if (contactId && !options.some((o) => o.value === contactId)) {
           this.model.update((m) => ({ ...m, contactId: '' }));
         }
       });

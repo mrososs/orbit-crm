@@ -15,13 +15,13 @@ import { debounced } from '../../shared/utils/signals';
 import { LanguageService } from '../../core/i18n/language.service';
 import { TeamStore } from '../../state/entity-stores';
 import { TaskDateFilter, TaskGroup, TasksViewStore, TaskStatusFilter } from './tasks-view.store';
-import { SelectValue } from '../../shared/directives/select-value';
+import { Select } from '../../shared/ui/controls/select';
 
 const COMPLETED_PAGE = 10;
 
 @Component({
   selector: 'app-activities-page',
-  imports: [SelectValue, TranslatePipe, LucideDynamicIcon, Tabs, TaskItem, Timeline, EmptyState, Skeleton, ActivityIcon, NumberPipe, PercentPipe],
+  imports: [Select, TranslatePipe, LucideDynamicIcon, Tabs, TaskItem, Timeline, EmptyState, Skeleton, ActivityIcon, NumberPipe, PercentPipe],
   template: `
     <div class="page animate-rise-in">
       <header class="page-header">
@@ -46,27 +46,9 @@ const COMPLETED_PAGE = 10;
               <input id="task-search" type="search" class="control control-sm ps-9" [placeholder]="'activities.searchPlaceholder' | translate" [value]="search()" (input)="search.set($any($event.target).value)" />
             </div>
             <div class="grid grid-cols-3 gap-2 sm:flex">
-              <label class="sr-only" for="task-type">{{ 'filters.type' | translate }}</label>
-              <select id="task-type" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.type()" (change)="store.setType($any($event.target).value)" data-testid="filter-type">
-                <option value="all">{{ 'filters.allTypes' | translate }}</option>
-                @for (t of types; track t) {
-                  <option [value]="t">{{ 'enums.activityType.' + t | translate }}</option>
-                }
-              </select>
-              <label class="sr-only" for="task-date">{{ 'filters.date' | translate }}</label>
-              <select id="task-date" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.date()" (change)="setDate($event)" data-testid="filter-date">
-                @for (d of dateFilters; track d) {
-                  <option [value]="d">{{ 'activities.dateFilter.' + d | translate }}</option>
-                }
-              </select>
-              <label class="sr-only" for="task-owner">{{ 'filters.owner' | translate }}</label>
-              <select id="task-owner" class="control control-sm sm:w-auto sm:max-w-60" [uiValue]="store.ownerId()" (change)="store.setOwner($any($event.target).value)" data-testid="filter-task-owner">
-                <option value="all">{{ 'activities.everyone' | translate }}</option>
-                <option [value]="currentUser">{{ 'activities.mine' | translate }}</option>
-                @for (m of others(); track m.id) {
-                  <option [value]="m.id">{{ name(m) }}</option>
-                }
-              </select>
+              <ui-select inputId="task-type" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-type" [ariaLabel]="'filters.type' | translate" [options]="typeOptions()" [value]="store.type()" (valueChange)="store.setType($any($event))" />
+              <ui-select inputId="task-date" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-date" [ariaLabel]="'filters.date' | translate" [options]="dateOptions()" [value]="store.date()" (valueChange)="setDate($event)" />
+              <ui-select inputId="task-owner" size="sm" class="sm:w-auto sm:min-w-36 sm:max-w-60" testId="filter-task-owner" [ariaLabel]="'filters.owner' | translate" [options]="ownerOptions()" [value]="store.ownerId()" (valueChange)="store.setOwner($event)" />
             </div>
             @if (store.activeFilters() > 0) {
               <button type="button" class="btn btn-ghost btn-sm" (click)="clear()">
@@ -187,6 +169,13 @@ export class ActivitiesPage {
   private readonly debouncedSearch = debounced(this.search, 180);
 
   protected readonly others = computed(() => this.team.members().filter((m) => m.id !== CURRENT_USER_ID));
+  protected readonly typeOptions = computed(() => [{ value: 'all', label: this.language.t('filters.allTypes') }, ...this.types.map((v) => ({ value: v, label: this.language.t(`enums.activityType.${v}`) }))]);
+  protected readonly dateOptions = computed(() => [...this.dateFilters.map((v) => ({ value: v, label: this.language.t(`activities.dateFilter.${v}`) }))]);
+  protected readonly ownerOptions = computed(() => [
+    { value: 'all', label: this.language.t('activities.everyone') },
+    { value: this.currentUser, label: this.language.t('activities.mine') },
+    ...this.others().map((m) => ({ value: m.id, label: fullName(m) })),
+  ]);
 
   protected readonly tabs = computed<TabItem[]>(() => {
     const counts = this.store.counts();
@@ -215,8 +204,8 @@ export class ActivitiesPage {
     this.completedLimit.set(COMPLETED_PAGE);
   }
 
-  protected setDate(event: Event): void {
-    this.store.setDate((event.target as HTMLSelectElement).value as TaskDateFilter);
+  protected setDate(value: string): void {
+    this.store.setDate(value as TaskDateFilter);
   }
 
   protected clear(): void {

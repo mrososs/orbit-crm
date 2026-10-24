@@ -29,6 +29,8 @@ const DYNAMIC_PREFIXES = [
   'contacts.tabs.',
   'validation.',
   'charts.bands.',
+  'showcase.flags.',
+  'showcase.plans.',
 ];
 
 const dicts = Object.fromEntries(
