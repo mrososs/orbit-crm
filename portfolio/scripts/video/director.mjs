@@ -128,6 +128,40 @@ export class Director {
     );
   }
 
+  press(key) {
+    return this.page.keyboard.press(key);
+  }
+
+  /** Number of assistant replies so far (to detect when the next run has finished). */
+  replies() {
+    return this.app.locator('[data-testid="assistant-message"][data-role="assistant"]').count();
+  }
+
+  /** Waits for the assistant run (simulated network + streaming) to finish. */
+  async assistantIdle(previousReplies) {
+    await this.frame.waitForFunction(
+      (n) =>
+        document.querySelectorAll('[data-testid="assistant-message"][data-role="assistant"]').length > n &&
+        !document.querySelector('[data-testid="assistant-stop"]') &&
+        !document.querySelector('[data-testid="assistant-status"]'),
+      previousReplies,
+      { timeout: 20000 },
+    );
+  }
+
+  /** Smoothly scrolls the assistant conversation so the last `selector` match sits at the top. */
+  async scrollPanelTo(selector, offset = 12) {
+    await this.frame.evaluate(
+      ({ selector, offset }) => {
+        const body = document.getElementById('assistant-panel-body');
+        const target = [...body.querySelectorAll(selector)].pop();
+        const top = body.scrollTop + target.getBoundingClientRect().top - body.getBoundingClientRect().top - offset;
+        body.scrollTo({ top, behavior: 'smooth' });
+      },
+      { selector, offset },
+    );
+  }
+
   async highlight(locator, pad = 6) {
     if (!locator) return this.stage('highlight', null);
     const box = await locator.boundingBox();

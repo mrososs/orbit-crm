@@ -34,7 +34,7 @@ async function recordMain() {
   const page = await context.newPage();
   const d = new Director(page);
   await d.open({ mode: 'landscape', route: '/dashboard' });
-  await d.stage('title', 'Orbit CRM <span>—</span> Modern Sales Workspace', 'Turn relationships into revenue.', ['Dashboard', 'Pipeline', 'Contacts', 'Tasks', 'Reports']);
+  await d.stage('title', 'Orbit CRM <span>—</span> Modern Sales Workspace', 'Turn relationships into revenue.', ['Dashboard', 'Pipeline', 'Contacts', 'Tasks', 'Reports', 'Assistant']);
   await d.wait(900);
 
   const rec = await startRecording(page, join(TMP, 'main'), { width: 1920, height: 1080 });
@@ -106,7 +106,54 @@ async function recordMain() {
   await d.moveTo(app.getByTestId('completed-week'));
   await d.wait(900);
 
-  // 6 — Multilingual
+  // 6 — Interactive Demo Assistant: AG-UI events rendered as A2UI surfaces
+  await d.stage('caption', 'Interactive Demo Assistant', 'Ask for a view — get live, interactive UI', 'A scripted AG-UI agent streams A2UI surfaces · no AI model, no backend');
+  await d.click(app.getByTestId('assistant-toggle'), { pause: 700 });
+  let replies = await d.replies();
+  await d.click(app.locator('[data-testid="assistant-suggestion"][data-intent="salesOverview"]'));
+  await d.assistantIdle(replies);
+  await d.wait(500);
+  await d.scrollPanelTo('[data-testid="assistant-surface"]');
+  await d.moveTo(app.getByTestId('a2ui-kpi-revenue'), { x: 0.6, y: 0.5 });
+  await d.wait(1200);
+  await d.scrollPanelTo('[data-testid="a2ui-chart"]');
+  await d.wait(1300);
+
+  await d.stage('caption', 'Interactive Demo Assistant', 'Forms validated with Zod, saved through the CRM', 'Writes go through allowlisted commands — the Tasks list updates instantly');
+  replies = await d.replies();
+  await d.type(app.getByTestId('assistant-input'), 'Create a follow-up task', 55);
+  await d.press('Enter');
+  await d.assistantIdle(replies);
+  await d.scrollPanelTo('[data-testid="assistant-surface"]');
+  await d.wait(500);
+  await d.type(app.getByTestId('followup-subject'), 'Send the Q3 renewal pricing', 55);
+  await d.type(app.getByTestId('followup-contact'), 'Nim', 110);
+  await d.wait(600);
+  await d.press('Enter');
+  await d.wait(400);
+  await d.click(app.getByTestId('a2ui-form-submit'));
+  await app.getByTestId('a2ui-followup-created').waitFor({ timeout: 20000 });
+  await d.wait(1300);
+
+  await d.stage('caption', 'Protocol inspector', 'Every AG-UI event, schema-checked', 'The same event stream a remote agent would send');
+  await d.click(app.getByRole('tab', { name: /AG-UI events/ }), { pause: 600 });
+  await d.click(app.locator('[data-testid="inspector-event"][data-type^="ACTIVITY_"]:visible').first(), { pause: 1600 });
+  await d.click(app.getByTestId('assistant-close'), { pause: 600 });
+
+  // 7 — Orbit UI form controls (Signal Forms custom controls)
+  await d.stage('caption', 'Orbit UI', 'Accessible, custom form controls', 'Signal Forms custom controls · searchable selects · keyboard &amp; RTL ready');
+  await d.navigate('Pipeline');
+  await d.click(app.getByTestId('new-deal'), { pause: 500 });
+  await d.type(app.getByTestId('deal-name'), 'Data platform expansion', 45);
+  await d.type(app.getByTestId('deal-company'), 'hel', 120);
+  await d.wait(700);
+  await d.press('Enter');
+  await d.wait(300);
+  await d.click(app.getByTestId('deal-stage'), { pause: 600 });
+  await d.click(app.getByTestId('deal-stage-option').filter({ hasText: 'Proposal' }), { pause: 700 });
+  await d.click(app.getByRole('button', { name: 'Cancel', exact: true }), { pause: 500 });
+
+  // 8 — Multilingual
   await d.stage('caption', 'Multilingual by design', 'English • <span class="ar">العربية</span> • Français', 'Instant switching — no reload, no lost state');
   await d.navigate('Dashboard');
   await d.click(app.getByTestId('language-switcher'));
@@ -121,7 +168,7 @@ async function recordMain() {
   await d.stage('caption', 'Multilingual by design', 'Back to LTR — en français', 'Dates, numbers and currency formatted per locale');
   await d.wait(1500);
 
-  // 7 — Responsive & theming
+  // 9 — Responsive & theming
   await d.stage('hideCaption');
   await d.glide(1300, 700, 500);
   await d.stage('phone', true);
@@ -132,9 +179,9 @@ async function recordMain() {
   await d.scrollApp(null, 420);
   await d.wait(1300);
 
-  // 8 — Closing
+  // 10 — Closing
   await d.stage('hideCaption');
-  await d.stage('title', 'Orbit CRM', 'Built with Angular, Signals, TypeScript &amp; ECharts', ['Angular 21', 'Signals', 'NgRx SignalStore', 'Apache ECharts', 'ngx-translate', 'Tailwind CSS']);
+  await d.stage('title', 'Orbit CRM', 'Built with Angular, Signals, TypeScript &amp; ECharts', ['Angular 21', 'Signal Forms', 'NgRx SignalStore', 'AG-UI + A2UI', 'Zod', 'Apache ECharts', 'ngx-translate', 'Tailwind CSS']);
   await d.glide(1500, 900, 400);
   await d.wait(3000);
 
@@ -178,7 +225,18 @@ async function recordShort() {
   await d.click(app.getByTestId('move-to-qualified'), { pause: 600 });
   await d.wait(1600);
 
-  // 3 — Responsive & multilingual
+  // 3 — Interactive Demo Assistant (full-screen drawer on mobile)
+  await d.stage('headline', 'Demo <span>assistant</span>', 'AG-UI events → live A2UI surfaces · no AI model');
+  await d.click(app.getByTestId('assistant-toggle'), { pause: 600 });
+  const replies = await d.replies();
+  await d.click(app.locator('[data-testid="assistant-suggestion"][data-intent="topDeals"]'));
+  await d.assistantIdle(replies);
+  await d.wait(400);
+  await d.scrollPanelTo('[data-testid="assistant-surface"]');
+  await d.wait(2200);
+  await d.click(app.getByTestId('assistant-close'), { pause: 500 });
+
+  // 4 — Responsive & multilingual
   await d.stage('headline', 'English → <span class="ar">العربية</span>', 'Full right-to-left layout, instantly');
   await d.scrollApp(null, 0);
   await d.wait(500);
@@ -191,8 +249,8 @@ async function recordShort() {
   await d.stage('headline', 'Beautiful on <span>every screen</span>', 'Light &amp; dark · LTR &amp; RTL · Desktop &amp; mobile');
   await d.wait(2300);
 
-  // 4 — Closing
-  await d.stage('headline', 'Orbit CRM', 'Angular · Signals · ECharts · RTL-ready');
+  // 5 — Closing
+  await d.stage('headline', 'Orbit CRM', 'Angular · Signals · AG-UI + A2UI · RTL-ready');
   await d.wait(2400);
 
   const capture = await rec.stop();
