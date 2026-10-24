@@ -34,6 +34,10 @@
   "private": true,
   "packageManager": "npm@11.7.0",
   "dependencies": {
+    "@a2ui/angular": "^0.13.0",
+    "@a2ui/web_core": "^0.14.0",
+    "@ag-ui/client": "^1.0.3",
+    "@ag-ui/core": "^1.0.3",
     "@angular/cdk": "^21.2.14",
     "@angular/common": "^21.0.0",
     "@angular/compiler": "^21.0.0",
@@ -50,7 +54,8 @@
     "echarts": "^6.1.0",
     "lucide": "^1.61.0",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@angular/build": "^21.0.0",
@@ -74,5 +79,10 @@
   },
   "optionalDependencies": {
     "ffmpeg-static": "^5.3.0"
+  },
+  "overrides": {
+    "@ag-ui/client": {
+      "rxjs": "$rxjs"
+    }
   }
 }
